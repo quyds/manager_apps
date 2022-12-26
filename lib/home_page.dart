@@ -1,7 +1,14 @@
 import 'package:flutter/material.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  int selectedItem = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -53,17 +60,22 @@ class HomePage extends StatelessWidget {
             child: GridView.count(
               crossAxisCount: 4,
               children: [
-                Container(
-                  color: Colors.green,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Icon(
-                        Icons.home,
-                        color: Colors.white,
-                      ),
-                      Text("Home", style: TextStyle(color: Colors.white))
-                    ],
+                GestureDetector(
+                  onTap: () {
+                    Navigator.of(context).pushNamed('/Task');
+                  },
+                  child: Container(
+                    color: Colors.green,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Icon(
+                          Icons.home,
+                          color: Colors.white,
+                        ),
+                        Text("Home", style: TextStyle(color: Colors.white))
+                      ],
+                    ),
                   ),
                 ),
                 Container(
@@ -147,6 +159,40 @@ class HomePage extends StatelessWidget {
             ),
           ),
         ],
+      ),
+      bottomNavigationBar: BottomNavBar(),
+    );
+  }
+
+  Theme BottomNavBar() {
+    return Theme(
+      data: ThemeData(canvasColor: Colors.grey.shade300),
+      child: BottomNavigationBar(
+        items: [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.call),
+            label: 'Call',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.message),
+            label: 'Message',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.camera),
+            label: 'Camera',
+          ),
+        ],
+        type: BottomNavigationBarType.fixed,
+        currentIndex: selectedItem,
+        onTap: (index) {
+          setState(() {
+            selectedItem = index;
+          });
+        },
       ),
     );
   }

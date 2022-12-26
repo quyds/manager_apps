@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:manager_apps/route_generator.dart';
 
 import 'home_page.dart';
 
@@ -14,6 +15,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       theme: ThemeData(primarySwatch: Colors.blue),
       home: HomePage(),
+      onGenerateRoute: RouteGenerator.routeGenerator,
     );
   }
 }
