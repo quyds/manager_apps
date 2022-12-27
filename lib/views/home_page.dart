@@ -91,24 +91,51 @@ class _HomePageState extends State<HomePage> {
                 scrollDirection: Axis.horizontal,
                 children: <Widget>[
                   Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(30),
+                      color: Colors.red,
+                    ),
                     width: 160.0,
-                    color: Colors.red,
+                  ),
+                  SizedBox(
+                    width: 10,
                   ),
                   Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(30),
+                      color: Colors.blue,
+                    ),
                     width: 160.0,
-                    color: Colors.blue,
+                  ),
+                  SizedBox(
+                    width: 10,
                   ),
                   Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(30),
+                      color: Colors.green,
+                    ),
                     width: 160.0,
-                    color: Colors.green,
+                  ),
+                  SizedBox(
+                    width: 10,
                   ),
                   Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(30),
+                      color: Colors.yellow,
+                    ),
                     width: 160.0,
-                    color: Colors.yellow,
+                  ),
+                  SizedBox(
+                    width: 10,
                   ),
                   Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(30),
+                      color: Colors.orange,
+                    ),
                     width: 160.0,
-                    color: Colors.orange,
                   ),
                 ],
               ),
@@ -118,7 +145,7 @@ class _HomePageState extends State<HomePage> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Text(
-                    'Tiện ích',
+                    'My Tasks',
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
                 ],
