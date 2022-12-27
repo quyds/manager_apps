@@ -221,6 +221,34 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
             Container(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    margin: EdgeInsets.only(left: 10),
+                    child: Text('My Tasks',
+                        style: TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.bold)),
+                  ),
+                  ListTile(
+                    leading: CircleAvatar(),
+                    title: Text('To Do'),
+                    subtitle: Text('10 task'),
+                  ),
+                  ListTile(
+                    leading: CircleAvatar(),
+                    title: Text('To Do'),
+                    subtitle: Text('10 task'),
+                  ),
+                  ListTile(
+                    leading: CircleAvatar(),
+                    title: Text('To Do'),
+                    subtitle: Text('10 task'),
+                  )
+                ],
+              ),
+            ),
+            Container(
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
