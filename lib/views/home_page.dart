@@ -53,15 +53,19 @@ class _HomePageState extends State<HomePage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Container(
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(50),
-                        color: Colors.deepPurple.shade900),
-                    margin: EdgeInsets.only(right: 10, bottom: 40),
-                    width: 40,
-                    height: 40,
-                    child: Icon(
-                      Icons.notifications,
-                    )),
+                  margin: EdgeInsets.only(bottom: 30, right: 10),
+                  height: 46,
+                  width: 46,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Colors.deepPurple.shade900,
+                  ),
+                  child: Icon(
+                    Icons.notifications,
+                    color: Colors.white,
+                  ),
+                  alignment: Alignment.center,
+                ),
               ],
             )
           ],
@@ -85,142 +89,368 @@ class _HomePageState extends State<HomePage> {
             ),
             Container(
               margin: EdgeInsets.only(left: 10, right: 10),
-              height: 150,
+              height: 160,
               child: ListView(
                 // This next line does the trick.
                 scrollDirection: Axis.horizontal,
                 children: <Widget>[
                   Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(30),
-                      color: Colors.red,
-                    ),
-                    width: 160.0,
-                  ),
-                  SizedBox(
-                    width: 10,
-                  ),
-                  Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(30),
-                      color: Colors.blue,
-                    ),
-                    width: 160.0,
-                  ),
-                  SizedBox(
-                    width: 10,
-                  ),
-                  Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(30),
-                      color: Colors.green,
-                    ),
-                    width: 160.0,
-                  ),
-                  SizedBox(
-                    width: 10,
-                  ),
-                  Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(30),
-                      color: Colors.yellow,
-                    ),
-                    width: 160.0,
-                  ),
-                  SizedBox(
-                    width: 10,
-                  ),
-                  Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(30),
-                      color: Colors.orange,
-                    ),
-                    width: 160.0,
-                  ),
-                ],
-              ),
-            ),
-            Container(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Text(
-                    'My Tasks',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                  ),
-                ],
-              ),
-              margin: EdgeInsets.only(top: 10, left: 10, bottom: 10),
-            ),
-            Container(
-              child: GridView.count(
-                crossAxisCount: 4,
-                children: [
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.of(context).pushNamed('/Task');
-                    },
-                    child: Container(
-                      color: Colors.green,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          Icon(
-                            Icons.home,
-                            color: Colors.white,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Text(
+                          '10 Task',
+                          style: TextStyle(fontSize: 16, color: Colors.white),
+                        ),
+                        Text(
+                          'App Weather',
+                          style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white),
+                        ),
+                        Text(
+                          'August 2022',
+                          style: TextStyle(fontSize: 16, color: Colors.white),
+                        ),
+                        Container(
+                          width: 80,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              Container(
+                                width: 25,
+                                height: 25,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  image: DecorationImage(
+                                      image: AssetImage(
+                                          'assets/images/avatar.png'),
+                                      fit: BoxFit.contain),
+                                ),
+                              ),
+                              Container(
+                                width: 25,
+                                height: 25,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  image: DecorationImage(
+                                      image: AssetImage(
+                                          'assets/images/avatar.png'),
+                                      fit: BoxFit.contain),
+                                ),
+                              ),
+                              Container(
+                                width: 25,
+                                height: 25,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  image: DecorationImage(
+                                      image: AssetImage(
+                                          'assets/images/avatar.png'),
+                                      fit: BoxFit.contain),
+                                ),
+                              ),
+                            ],
                           ),
-                          Text("Home", style: TextStyle(color: Colors.white))
-                        ],
-                      ),
+                        )
+                      ],
                     ),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(30),
+                      color: Colors.blue.shade900,
+                    ),
+                    width: 160.0,
+                  ),
+                  SizedBox(
+                    width: 10,
                   ),
                   Container(
-                    color: Colors.green,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        Icon(
-                          Icons.account_circle,
-                          color: Colors.white,
+                        Text(
+                          '10 Task',
+                          style: TextStyle(fontSize: 14, color: Colors.white),
                         ),
-                        Text("Account", style: TextStyle(color: Colors.white))
+                        Text(
+                          'App Weather',
+                          style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white),
+                        ),
+                        Text(
+                          'August 2022',
+                          style: TextStyle(fontSize: 14, color: Colors.white),
+                        ),
+                        Container(
+                          width: 80,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              Container(
+                                width: 25,
+                                height: 25,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  image: DecorationImage(
+                                      image: AssetImage(
+                                          'assets/images/avatar.png'),
+                                      fit: BoxFit.contain),
+                                ),
+                              ),
+                              Container(
+                                width: 25,
+                                height: 25,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  image: DecorationImage(
+                                      image: AssetImage(
+                                          'assets/images/avatar.png'),
+                                      fit: BoxFit.contain),
+                                ),
+                              ),
+                              Container(
+                                width: 25,
+                                height: 25,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  image: DecorationImage(
+                                      image: AssetImage(
+                                          'assets/images/avatar.png'),
+                                      fit: BoxFit.contain),
+                                ),
+                              ),
+                            ],
+                          ),
+                        )
                       ],
                     ),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(30),
+                      color: Colors.pink.shade900,
+                    ),
+                    width: 160.0,
+                  ),
+                  SizedBox(
+                    width: 10,
                   ),
                   Container(
-                    color: Colors.green,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        Icon(
-                          Icons.message,
-                          color: Colors.white,
+                        Text(
+                          '10 Task',
+                          style: TextStyle(fontSize: 14, color: Colors.white),
                         ),
-                        Text("Messages", style: TextStyle(color: Colors.white))
+                        Text(
+                          'App Weather',
+                          style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white),
+                        ),
+                        Text(
+                          'August 2022',
+                          style: TextStyle(fontSize: 14, color: Colors.white),
+                        ),
+                        Container(
+                          width: 80,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              Container(
+                                width: 25,
+                                height: 25,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  image: DecorationImage(
+                                      image: AssetImage(
+                                          'assets/images/avatar.png'),
+                                      fit: BoxFit.contain),
+                                ),
+                              ),
+                              Container(
+                                width: 25,
+                                height: 25,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  image: DecorationImage(
+                                      image: AssetImage(
+                                          'assets/images/avatar.png'),
+                                      fit: BoxFit.contain),
+                                ),
+                              ),
+                              Container(
+                                width: 25,
+                                height: 25,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  image: DecorationImage(
+                                      image: AssetImage(
+                                          'assets/images/avatar.png'),
+                                      fit: BoxFit.contain),
+                                ),
+                              ),
+                            ],
+                          ),
+                        )
                       ],
                     ),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(30),
+                      color: Colors.green.shade900,
+                    ),
+                    width: 160.0,
+                  ),
+                  SizedBox(
+                    width: 10,
                   ),
                   Container(
-                    color: Colors.green,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        Icon(
-                          Icons.list_alt,
-                          color: Colors.white,
+                        Text(
+                          '10 Task',
+                          style: TextStyle(fontSize: 14, color: Colors.white),
                         ),
-                        Text("Orders", style: TextStyle(color: Colors.white))
+                        Text(
+                          'App Weather',
+                          style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white),
+                        ),
+                        Text(
+                          'August 2022',
+                          style: TextStyle(fontSize: 14, color: Colors.white),
+                        ),
+                        Container(
+                          width: 80,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              Container(
+                                width: 25,
+                                height: 25,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  image: DecorationImage(
+                                      image: AssetImage(
+                                          'assets/images/avatar.png'),
+                                      fit: BoxFit.contain),
+                                ),
+                              ),
+                              Container(
+                                width: 25,
+                                height: 25,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  image: DecorationImage(
+                                      image: AssetImage(
+                                          'assets/images/avatar.png'),
+                                      fit: BoxFit.contain),
+                                ),
+                              ),
+                              Container(
+                                width: 25,
+                                height: 25,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  image: DecorationImage(
+                                      image: AssetImage(
+                                          'assets/images/avatar.png'),
+                                      fit: BoxFit.contain),
+                                ),
+                              ),
+                            ],
+                          ),
+                        )
                       ],
                     ),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(30),
+                      color: Colors.yellow.shade900,
+                    ),
+                    width: 160.0,
+                  ),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  Container(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Text(
+                          '10 Task',
+                          style: TextStyle(fontSize: 14, color: Colors.white),
+                        ),
+                        Text(
+                          'App Weather',
+                          style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white),
+                        ),
+                        Text(
+                          'August 2022',
+                          style: TextStyle(fontSize: 14, color: Colors.white),
+                        ),
+                        Container(
+                          width: 80,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              Container(
+                                width: 25,
+                                height: 25,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  image: DecorationImage(
+                                      image: AssetImage(
+                                          'assets/images/avatar.png'),
+                                      fit: BoxFit.contain),
+                                ),
+                              ),
+                              Container(
+                                width: 25,
+                                height: 25,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  image: DecorationImage(
+                                      image: AssetImage(
+                                          'assets/images/avatar.png'),
+                                      fit: BoxFit.contain),
+                                ),
+                              ),
+                              Container(
+                                width: 25,
+                                height: 25,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  image: DecorationImage(
+                                      image: AssetImage(
+                                          'assets/images/avatar.png'),
+                                      fit: BoxFit.contain),
+                                ),
+                              ),
+                            ],
+                          ),
+                        )
+                      ],
+                    ),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(30),
+                      color: Colors.orange.shade900,
+                    ),
+                    width: 160.0,
                   ),
                 ],
-                padding: EdgeInsets.all(10),
-                shrinkWrap: true,
-                mainAxisSpacing: 10,
-                crossAxisSpacing: 10,
               ),
             ),
             Container(
+              margin: EdgeInsets.only(top: 20),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -231,18 +461,66 @@ class _HomePageState extends State<HomePage> {
                             fontSize: 16, fontWeight: FontWeight.bold)),
                   ),
                   ListTile(
-                    leading: CircleAvatar(),
-                    title: Text('To Do'),
+                    leading: Container(
+                      height: 46,
+                      width: 46,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Colors.deepPurple.shade900,
+                      ),
+                      child: Icon(
+                        Icons.format_list_bulleted,
+                        color: Colors.white,
+                      ),
+                      alignment: Alignment.center,
+                    ),
+                    title: Text(
+                      'To Do',
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    ),
                     subtitle: Text('10 task'),
                   ),
                   ListTile(
-                    leading: CircleAvatar(),
-                    title: Text('To Do'),
+                    leading: Container(
+                      height: 46,
+                      width: 46,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Colors.deepPurple.shade900,
+                      ),
+                      child: Icon(
+                        Icons.autorenew,
+                        color: Colors.white,
+                      ),
+                      alignment: Alignment.center,
+                    ),
+                    title: Text(
+                      'In Process',
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    ),
                     subtitle: Text('10 task'),
                   ),
                   ListTile(
-                    leading: CircleAvatar(),
-                    title: Text('To Do'),
+                    leading: Container(
+                      height: 46,
+                      width: 46,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Colors.deepPurple.shade900,
+                      ),
+                      child: Icon(
+                        Icons.done,
+                        color: Colors.white,
+                      ),
+                      alignment: Alignment.center,
+                    ),
+                    title: Text(
+                      'Done',
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    ),
                     subtitle: Text('10 task'),
                   )
                 ],

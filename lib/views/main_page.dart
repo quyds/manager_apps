@@ -23,7 +23,9 @@ class _MainPageState extends State<MainPage> {
 
   Theme BottomNavBar() {
     return Theme(
-      data: ThemeData(canvasColor: Colors.grey.shade300),
+      data: ThemeData(
+        canvasColor: Colors.grey.shade300,
+      ),
       child: BottomNavigationBar(
         items: [
           BottomNavItem('Home', Icon(Icons.home)),
