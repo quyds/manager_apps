@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:manager_apps/home_page.dart';
 
-import 'task_page.dart';
+import 'views/home_page.dart';
+import 'views/task_page.dart';
 
 class RouteGenerator {
   static Route<dynamic>? routeGenerator(RouteSettings settings) {

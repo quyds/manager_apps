@@ -8,8 +8,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  int selectedItem = 0;
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -42,7 +40,7 @@ class _HomePageState extends State<HomePage> {
           backgroundColor: Colors.purple,
         ),
       ),
-      body: new Column(
+      body: Column(
         children: <Widget>[
           Container(
             child: Row(
@@ -159,40 +157,6 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
         ],
-      ),
-      bottomNavigationBar: BottomNavBar(),
-    );
-  }
-
-  Theme BottomNavBar() {
-    return Theme(
-      data: ThemeData(canvasColor: Colors.grey.shade300),
-      child: BottomNavigationBar(
-        items: [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.call),
-            label: 'Call',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.message),
-            label: 'Message',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.camera),
-            label: 'Camera',
-          ),
-        ],
-        type: BottomNavigationBarType.fixed,
-        currentIndex: selectedItem,
-        onTap: (index) {
-          setState(() {
-            selectedItem = index;
-          });
-        },
       ),
     );
   }
