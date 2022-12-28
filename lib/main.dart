@@ -12,7 +12,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: ThemeData(primarySwatch: Colors.blue, fontFamily: 'Poppins'),
+      theme: ThemeData(primarySwatch: Colors.deepPurple, fontFamily: 'Poppins'),
       home: const MainPage(),
       onGenerateRoute: RouteGenerator.routeGenerator,
     );

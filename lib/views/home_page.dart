@@ -456,11 +456,33 @@ class _HomePageState extends State<HomePage> {
                 children: [
                   Container(
                     margin: EdgeInsets.only(left: 10),
-                    child: Text('My Tasks',
-                        style: TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.bold)),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'My Tasks',
+                          style: TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.bold),
+                        ),
+                        Container(
+                          margin: EdgeInsets.only(right: 10),
+                          child: IconButton(
+                            onPressed: () {
+                              Navigator.of(context).pushNamed('/CreateTask');
+                            },
+                            icon: Icon(
+                              Icons.add,
+                              color: Colors.deepPurple.shade900,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                   ListTile(
+                    onTap: () {
+                      Navigator.of(context).pushNamed('/ListTask');
+                    },
                     leading: Container(
                       height: 46,
                       width: 46,
@@ -482,6 +504,9 @@ class _HomePageState extends State<HomePage> {
                     subtitle: Text('10 task'),
                   ),
                   ListTile(
+                    onTap: () {
+                      Navigator.of(context).pushNamed('/ListTask');
+                    },
                     leading: Container(
                       height: 46,
                       width: 46,
@@ -496,13 +521,16 @@ class _HomePageState extends State<HomePage> {
                       alignment: Alignment.center,
                     ),
                     title: Text(
-                      'In Process',
+                      'In Progress',
                       style:
                           TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                     ),
                     subtitle: Text('10 task'),
                   ),
                   ListTile(
+                    onTap: () {
+                      Navigator.of(context).pushNamed('/ListTask');
+                    },
                     leading: Container(
                       height: 46,
                       width: 46,
