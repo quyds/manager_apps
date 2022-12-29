@@ -9,11 +9,15 @@ class AccountPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('Account page')),
-      body: Center(
-        child: Text(
-          'Account page',
-          style: TextStyle(fontSize: 30),
-        ),
+      body: Column(
+        children: [
+          ListTile(
+            title: Text('Log in'),
+            onTap: () {
+              Navigator.of(context).pushNamed('/LogIn');
+            },
+          )
+        ],
       ),
     );
   }

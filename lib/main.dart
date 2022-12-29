@@ -11,6 +11,9 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // final userRespository = UserRespository();
+    // userRespository.createUserWithEmailAndPassword(
+    //     "quy123111@gmail.com", "123456");
     return MaterialApp(
       theme: ThemeData(primarySwatch: Colors.deepPurple, fontFamily: 'Poppins'),
       home: const MainPage(),

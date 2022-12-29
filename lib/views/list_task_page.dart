@@ -1,17 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
+import 'package:intl/intl.dart';
+import 'package:manager_apps/models/task_model.dart';
+import '../net/data.dart';
+import 'widgets/task_item.dart';
 
-class ListTaskPage extends StatefulWidget {
-  const ListTaskPage({super.key});
-
-  @override
-  State<ListTaskPage> createState() => _ListTaskPageState();
-}
-
-class _ListTaskPageState extends State<ListTaskPage> {
-  final List<String> entries = <String>['A', 'B', 'C'];
-  final List<int> colorCodes = <int>[500, 300, 100];
+class ListTaskPage extends StatelessWidget {
+  late List<Task> allTasks;
+  ListTaskPage() {
+    allTasks = prepareData();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -19,19 +16,14 @@ class _ListTaskPageState extends State<ListTaskPage> {
       appBar: AppBar(
         title: Text('List Task'),
       ),
-      body: ListView.builder(
-        itemCount: entries.length,
-        itemBuilder: (BuildContext context, int index) {
-          return Container(
-            color: Colors.blue[colorCodes[index]],
-            child: ListTile(
-              leading: const Icon(Icons.list),
-              trailing: Icon(Icons.edit),
-              title: Text("List item ${entries[index]}"),
-              subtitle: Text('list detail'),
-            ),
-          );
-        },
+      body: Center(
+        child: ListView.builder(
+            itemCount: allTasks.length,
+            itemBuilder: ((context, index) {
+              return TaskItem(
+                listedTask: allTasks[index],
+              );
+            })),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
@@ -40,5 +32,22 @@ class _ListTaskPageState extends State<ListTaskPage> {
         child: const Icon(Icons.add),
       ),
     );
+  }
+
+  List<Task> prepareData() {
+    List<Task> all = [];
+    int lenght = DataTasks.Task_Title.length;
+    for (int i = 0; i < lenght - 1; i++) {
+      int taskId = i + 1;
+      var taskTitle = DataTasks.Task_Title[i];
+      var taskDesciption = DataTasks.Task_Description[i];
+      var taskEstimateTime = DataTasks.Task_EstimateTime[i];
+      var taskCompleteTime = DataTasks.Task_CompleteTime[i];
+      String taskDate = DateFormat('yyyy-MM-dd hh:mm').format(DateTime.now());
+      Task addTask = Task(taskId, taskTitle, taskDesciption, taskEstimateTime,
+          taskCompleteTime, taskDate);
+      all.add(addTask);
+    }
+    return all;
   }
 }
