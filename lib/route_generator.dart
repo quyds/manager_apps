@@ -25,7 +25,7 @@ class RouteGenerator {
             appBar: AppBar(title: Text('Error Page')),
             body: Center(
               child: Text(
-                '404',
+                'Chưa tạo PageRoute',
                 style: TextStyle(fontSize: 36),
               ),
             ),

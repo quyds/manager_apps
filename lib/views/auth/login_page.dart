@@ -60,7 +60,7 @@ class _LogInState extends State<LogIn> {
             ),
             TextButton(
               onPressed: () {
-                //forgot password screen
+                Navigator.of(context).pushNamed('/ForgotPassword');
               },
               child: const Text(
                 'Forgot Password',
