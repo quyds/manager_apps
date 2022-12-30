@@ -10,6 +10,7 @@ class Register extends StatefulWidget {
 }
 
 class _RegisterState extends State<Register> {
+  TextEditingController nameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   TextEditingController confirmPasswordController = TextEditingController();
@@ -41,9 +42,43 @@ class _RegisterState extends State<Register> {
             Container(
               padding: const EdgeInsets.all(10),
               child: TextField(
+                controller: nameController,
+                decoration: InputDecoration(
+                  prefixIcon: Opacity(
+                    opacity: 0.3,
+                    child: Container(
+                      padding: EdgeInsets.only(left: 8, right: 8),
+                      width: 50,
+                      child: Image.asset(
+                        "assets/images/ic_user.png",
+                      ),
+                    ),
+                  ),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                  labelText: 'Name',
+                ),
+              ),
+            ),
+            Container(
+              padding: const EdgeInsets.all(10),
+              child: TextField(
                 controller: emailController,
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
+                decoration: InputDecoration(
+                  prefixIcon: Opacity(
+                    opacity: 0.5,
+                    child: Container(
+                      padding: EdgeInsets.only(left: 5, right: 5),
+                      width: 50,
+                      child: Image.asset(
+                        "assets/images/ic_mail.png",
+                      ),
+                    ),
+                  ),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(6),
+                  ),
                   labelText: 'Email',
                 ),
               ),
@@ -53,8 +88,20 @@ class _RegisterState extends State<Register> {
               child: TextField(
                 obscureText: true,
                 controller: passwordController,
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
+                decoration: InputDecoration(
+                  prefixIcon: Opacity(
+                    opacity: 0.2,
+                    child: Container(
+                      padding: EdgeInsets.only(left: 5, right: 5),
+                      width: 50,
+                      child: Image.asset(
+                        "assets/images/ic_password.png",
+                      ),
+                    ),
+                  ),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(6),
+                  ),
                   labelText: 'Password',
                 ),
               ),
@@ -64,8 +111,20 @@ class _RegisterState extends State<Register> {
               child: TextField(
                 obscureText: true,
                 controller: confirmPasswordController,
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
+                decoration: InputDecoration(
+                  prefixIcon: Opacity(
+                    opacity: 0.2,
+                    child: Container(
+                      padding: EdgeInsets.only(left: 5, right: 5),
+                      width: 50,
+                      child: Image.asset(
+                        "assets/images/ic_password.png",
+                      ),
+                    ),
+                  ),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(6),
+                  ),
                   labelText: 'Confirm Password',
                 ),
               ),
@@ -74,8 +133,12 @@ class _RegisterState extends State<Register> {
                 height: 50,
                 padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
                 child: ElevatedButton(
-                  child: const Text('Register'),
+                  child: const Text(
+                    'Register',
+                    style: TextStyle(fontSize: 16),
+                  ),
                   onPressed: () {
+                    print(nameController.text);
                     print(emailController.text);
                     print(passwordController.text);
                     print(confirmPasswordController.text);
@@ -83,7 +146,9 @@ class _RegisterState extends State<Register> {
                 )),
             Row(
               children: <Widget>[
-                const Text('Does not have account?'),
+                const Text(
+                  'Already a User?',
+                ),
                 TextButton(
                   child: const Text(
                     'Log in',

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:manager_apps/views/auth/login_page.dart';
 import 'package:manager_apps/views/auth/register_page.dart';
 import 'package:manager_apps/views/list_task_page.dart';
+import 'package:manager_apps/views/main_page.dart';
 
 import 'views/home_page.dart';
 import 'views/create_task_page.dart';
@@ -9,7 +10,9 @@ import 'views/create_task_page.dart';
 class RouteGenerator {
   static Route<dynamic>? routeGenerator(RouteSettings settings) {
     switch (settings.name) {
-      case ('/'):
+      case ('/Main'):
+        return MaterialPageRoute(builder: (context) => MainPage());
+      case ('/Home'):
         return MaterialPageRoute(builder: (context) => HomePage());
       case ('/CreateTask'):
         return MaterialPageRoute(builder: (context) => CreateTaskPage());
