@@ -30,11 +30,11 @@ class _LogInState extends State<LogIn> {
         print("No user found for that email");
       }
     }
+    return user;
   }
 
   @override
   Widget build(BuildContext context) {
-    User user;
     TextEditingController emailController = TextEditingController();
     TextEditingController passwordController = TextEditingController();
     return Scaffold(
@@ -121,14 +121,14 @@ class _LogInState extends State<LogIn> {
                     style: TextStyle(fontSize: 16),
                   ),
                   onPressed: () async {
-                    await loginUsingEmailPassword(
-                            email: emailController.text,
-                            password: passwordController.text,
-                            context: context)
-                        .then((value) {
-                      if (value?.refreshToken != null) {}
+                    User? user = await loginUsingEmailPassword(
+                        email: emailController.text,
+                        password: passwordController.text,
+                        context: context);
+                    print('1 ${user}');
+                    if (user != null) {
                       Navigator.of(context).pushNamed('/Main');
-                    });
+                    }
                   },
                 )),
             Row(

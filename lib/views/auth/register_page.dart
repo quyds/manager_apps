@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
@@ -138,10 +139,17 @@ class _RegisterState extends State<Register> {
                     style: TextStyle(fontSize: 16),
                   ),
                   onPressed: () {
-                    print(nameController.text);
-                    print(emailController.text);
-                    print(passwordController.text);
-                    print(confirmPasswordController.text);
+                    print('create');
+                    FirebaseAuth.instance
+                        .createUserWithEmailAndPassword(
+                            email: emailController.text,
+                            password: passwordController.text)
+                        .then((value) {
+                      print('create');
+                      Navigator.of(context).pushNamed('/LogIn');
+                    }).onError((error, stackTrace) {
+                      print('Error ${error.toString()}');
+                    });
                   },
                 )),
             Row(
