@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:manager_apps/views/auth/login_page.dart';
 import 'package:manager_apps/views/auth/register_page.dart';
+import 'package:manager_apps/views/edit_profile_page.dart';
 import 'package:manager_apps/views/list_task_page.dart';
 import 'package:manager_apps/views/main_page.dart';
 
@@ -14,6 +15,8 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (context) => MainPage());
       case ('/Home'):
         return MaterialPageRoute(builder: (context) => HomePage());
+      case ('/EditProfile'):
+        return MaterialPageRoute(builder: (context) => EditProfilePage());
       case ('/CreateTask'):
         return MaterialPageRoute(builder: (context) => CreateTaskPage());
       case ('/ListTask'):

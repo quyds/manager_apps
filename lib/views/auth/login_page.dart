@@ -1,10 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:manager_apps/views/main_page.dart';
-
-import '../home_page.dart';
 
 class LogIn extends StatefulWidget {
   const LogIn({super.key});
@@ -18,11 +13,11 @@ class _LogInState extends State<LogIn> {
       {required String email,
       required String password,
       required BuildContext context}) async {
-    FirebaseAuth auth = FirebaseAuth.instance;
+    FirebaseAuth _auth = FirebaseAuth.instance;
 
     User? user;
     try {
-      UserCredential userCredential = await auth.signInWithEmailAndPassword(
+      UserCredential userCredential = await _auth.signInWithEmailAndPassword(
           email: email, password: password);
       user = userCredential.user;
     } on FirebaseAuthException catch (e) {

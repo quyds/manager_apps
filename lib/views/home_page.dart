@@ -9,10 +9,11 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  User? user;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
 
   @override
   Widget build(BuildContext context) {
+    User? currentUser = _auth.currentUser;
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(150),
@@ -25,7 +26,7 @@ class _HomePageState extends State<HomePage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  user?.displayName ?? 'Tran Ngoc Quy',
+                  currentUser?.displayName ?? 'Your Name',
                   style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
@@ -42,13 +43,18 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
           leadingWidth: 90,
-          leading: Container(
-            margin: EdgeInsets.only(left: 10),
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              image: DecorationImage(
-                  image: AssetImage('assets/images/avatar.png'),
-                  fit: BoxFit.contain),
+          leading: InkWell(
+            onTap: () {
+              Navigator.of(context).pushNamed('/EditProfile');
+            },
+            child: Container(
+              margin: EdgeInsets.only(left: 10),
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                image: DecorationImage(
+                    image: AssetImage('assets/images/avatar.png'),
+                    fit: BoxFit.contain),
+              ),
             ),
           ),
           actions: [

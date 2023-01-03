@@ -1,7 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
+import 'package:manager_apps/models/user/user_model.dart';
+
+import '../../core/extensions/update_info.dart';
 
 class Register extends StatefulWidget {
   const Register({super.key});
@@ -144,10 +146,13 @@ class _RegisterState extends State<Register> {
                         .createUserWithEmailAndPassword(
                             email: emailController.text,
                             password: passwordController.text)
-                        .then((value) {
-                      print('create');
-                      Navigator.of(context).pushNamed('/LogIn');
-                    }).onError((error, stackTrace) {
+                        .then(
+                      (value) {
+                        if (value.additionalUserInfo != null) {
+                          postDetailsToFirestore();
+                        }
+                      },
+                    ).onError((error, stackTrace) {
                       print('Error ${error.toString()}');
                     });
                   },
@@ -173,5 +178,29 @@ class _RegisterState extends State<Register> {
         ),
       ),
     );
+  }
+
+  postDetailsToFirestore() async {
+    FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
+    User? user = FirebaseAuth.instance.currentUser;
+
+    UserModel userModel = UserModel(
+      uid: user!.uid,
+      email: user.email,
+      name: nameController.text,
+    );
+
+    await firebaseFirestore
+        .collection('users')
+        .doc(user.uid)
+        .set(userModel.toMap());
+
+    updateDisplayName(nameController.text);
+
+    const snackBar = SnackBar(
+      content: Text('Đăng ký thành công !'),
+    );
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    Navigator.of(context).pushNamed('/LogIn');
   }
 }

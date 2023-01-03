@@ -137,34 +137,39 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
                     ),
                   ),
                   Container(
-                    margin: EdgeInsets.only(top: 20),
-                    width: 200,
+                    margin: EdgeInsets.only(top: 10),
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        ElevatedButton(
-                          style: ButtonStyle(
-                            shape: MaterialStateProperty.all(
-                              RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(16),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: ElevatedButton(
+                            style: ButtonStyle(
+                              shape: MaterialStateProperty.all(
+                                RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(16),
+                                ),
                               ),
                             ),
+                            child: Text('Back'),
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
                           ),
-                          child: Text('Back'),
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                          },
                         ),
-                        ElevatedButton(
-                          style: ButtonStyle(
-                            shape: MaterialStateProperty.all(
-                              RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(16),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: ElevatedButton(
+                            style: ButtonStyle(
+                              shape: MaterialStateProperty.all(
+                                RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(16),
+                                ),
                               ),
                             ),
+                            child: Text('Create Task'),
+                            onPressed: () {},
                           ),
-                          child: Text('Create Task'),
-                          onPressed: () {},
                         )
                       ],
                     ),
