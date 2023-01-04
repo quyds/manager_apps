@@ -1,5 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+
+import '../services/home_services.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -14,6 +17,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     User? currentUser = _auth.currentUser;
+
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(150),
@@ -25,20 +29,36 @@ class _HomePageState extends State<HomePage> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  currentUser?.displayName ?? 'Your Name',
-                  style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black),
-                ),
+                StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+                    stream: getData(currentUser!.uid, "users"),
+                    builder: (context, snapshot) {
+                      if (!snapshot.hasData) {
+                        return new CircularProgressIndicator();
+                      }
+                      var document = snapshot.data;
+                      return Text(
+                        document!["name"] ?? 'Your Name',
+                        style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black),
+                      );
+                    }),
                 SizedBox(
                   height: 5,
                 ),
-                Text(
-                  'Development',
-                  style: TextStyle(fontSize: 14, color: Colors.black),
-                )
+                StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+                    stream: getData(currentUser.uid, "users"),
+                    builder: (context, snapshot) {
+                      if (!snapshot.hasData) {
+                        return new CircularProgressIndicator();
+                      }
+                      var document = snapshot.data;
+                      return Text(
+                        document!["level"] ?? 'Your Level',
+                        style: TextStyle(fontSize: 14, color: Colors.black),
+                      );
+                    }),
               ],
             ),
           ),
@@ -47,15 +67,38 @@ class _HomePageState extends State<HomePage> {
             onTap: () {
               Navigator.of(context).pushNamed('/EditProfile');
             },
-            child: Container(
-              margin: EdgeInsets.only(left: 10),
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                image: DecorationImage(
-                    image: AssetImage('assets/images/avatar.png'),
-                    fit: BoxFit.contain),
-              ),
-            ),
+            child: StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+                stream: getData(currentUser.uid, "users"),
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData) {
+                    return new CircularProgressIndicator();
+                  }
+                  var document = snapshot.data;
+                  var image = document!["profileImage"];
+                  return Container(
+                    margin: EdgeInsets.only(left: 10),
+                    decoration: BoxDecoration(
+                      border: Border.all(width: 2, color: Colors.white),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.35),
+                          spreadRadius: 5,
+                          blurRadius: 5,
+                          offset: Offset(0, 2),
+                        )
+                      ],
+                      shape: BoxShape.circle,
+                      image: image == null
+                          ? DecorationImage(
+                              image: AssetImage('assets/images/avatar.png'),
+                              fit: BoxFit.contain)
+                          : DecorationImage(
+                              image: NetworkImage(image),
+                              fit: BoxFit.contain,
+                            ),
+                    ),
+                  );
+                }),
           ),
           actions: [
             Column(

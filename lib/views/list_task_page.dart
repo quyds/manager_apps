@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:manager_apps/models/task/task_model.dart';
-import '../net/data.dart';
+import '../services/data.dart';
 import 'widgets/task_item.dart';
 
 class ListTaskPage extends StatelessWidget {
