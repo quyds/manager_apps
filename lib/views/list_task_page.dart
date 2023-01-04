@@ -16,14 +16,44 @@ class ListTaskPage extends StatelessWidget {
       appBar: AppBar(
         title: Text('List Task'),
       ),
-      body: Center(
-        child: ListView.builder(
-            itemCount: allTasks.length,
-            itemBuilder: ((context, index) {
-              return TaskItem(
-                listedTask: allTasks[index],
-              );
-            })),
+      body: Column(
+        children: [
+          Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black,
+                  offset: Offset(20.0, 10.0),
+                  blurRadius: 20.0,
+                  spreadRadius: 40.0,
+                )
+              ],
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text('Trang thai'),
+                  Text('In Progress'),
+                ],
+              ),
+            ),
+          ),
+          Expanded(
+            child: Container(
+              color: Colors.grey.shade300,
+              child: ListView.builder(
+                  itemCount: allTasks.length,
+                  itemBuilder: ((context, index) {
+                    return TaskItem(
+                      listedTask: allTasks[index],
+                    );
+                  })),
+            ),
+          ),
+        ],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
