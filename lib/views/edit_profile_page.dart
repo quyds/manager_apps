@@ -4,12 +4,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart';
 
-import '../services/home_services.dart';
+import '../core/extensions/update_info.dart';
+import '../core/repositories/get_data_collection_doc.dart';
 
 class EditProfilePage extends StatefulWidget {
   const EditProfilePage({super.key});
@@ -27,13 +26,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
   TextEditingController levelController = TextEditingController();
 
   File? file;
-
-  // @override
-  // void initState() {
-  //   User? currentUser = _auth.currentUser;
-  //   nameController.text = streamBuilderEditInfo(currentUser);
-  //   super.initState();
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -62,11 +54,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 height: 30,
               ),
               streamBuilderEditInfo(currentUser, "name", "Name"),
-              // TextField(
-              //   controller: nameController,
-              //   decoration: InputDecoration(
-              //       labelText: "Name", border: OutlineInputBorder()),
-              // ),
               SizedBox(
                 height: 30,
               ),
@@ -115,7 +102,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
                   ],
                 ),
               ),
-              // ElevatedButton(onPressed: () {}, child: Text('Update profile'))
             ],
           ),
         ),
@@ -161,7 +147,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
   StreamBuilder<DocumentSnapshot<Map<String, dynamic>>> streamBuilderEditInfo(
       User? currentUser, String name, String labelName) {
     return StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
-      stream: getData(currentUser!.uid, "users"),
+      stream: getDataDoc(currentUser!.uid, "users"),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
           return new CircularProgressIndicator();
@@ -169,6 +155,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
         var document = snapshot.data;
         var data = document![name];
         debugPrint(data.toString());
+        updateDisplayName(nameController.text);
         return TextField(
           controller: nameController = TextEditingController(text: data),
           decoration: InputDecoration(
@@ -181,7 +168,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
   StreamBuilder<DocumentSnapshot<Map<String, dynamic>>> streamBuilderEditPhone(
       User? currentUser, String name, String labelName) {
     return StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
-      stream: getData(currentUser!.uid, "users"),
+      stream: getDataDoc(currentUser!.uid, "users"),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
           return new CircularProgressIndicator();
@@ -201,7 +188,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
   StreamBuilder<DocumentSnapshot<Map<String, dynamic>>> streamBuilderEditLevel(
       User? currentUser, String name, String labelName) {
     return StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
-      stream: getData(currentUser!.uid, "users"),
+      stream: getDataDoc(currentUser!.uid, "users"),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
           return new CircularProgressIndicator();
@@ -221,7 +208,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
   StreamBuilder<DocumentSnapshot<Map<String, dynamic>>> streamBuilderEditImage(
       User? currentUser) {
     return StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
-      stream: getData(currentUser!.uid, "users"),
+      stream: getDataDoc(currentUser!.uid, "users"),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
           return new CircularProgressIndicator();

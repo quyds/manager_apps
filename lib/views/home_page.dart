@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-import '../services/home_services.dart';
+import '../core/repositories/get_data_collection_doc.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -30,7 +30,7 @@ class _HomePageState extends State<HomePage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
-                    stream: getData(currentUser!.uid, "users"),
+                    stream: getDataDoc(currentUser!.uid, "users"),
                     builder: (context, snapshot) {
                       if (!snapshot.hasData) {
                         return new CircularProgressIndicator();
@@ -48,7 +48,7 @@ class _HomePageState extends State<HomePage> {
                   height: 5,
                 ),
                 StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
-                    stream: getData(currentUser.uid, "users"),
+                    stream: getDataDoc(currentUser.uid, "users"),
                     builder: (context, snapshot) {
                       if (!snapshot.hasData) {
                         return new CircularProgressIndicator();
@@ -68,7 +68,7 @@ class _HomePageState extends State<HomePage> {
               Navigator.of(context).pushNamed('/EditProfile');
             },
             child: StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
-                stream: getData(currentUser.uid, "users"),
+                stream: getDataDoc(currentUser.uid, "users"),
                 builder: (context, snapshot) {
                   if (!snapshot.hasData) {
                     return new CircularProgressIndicator();
@@ -577,7 +577,10 @@ class _HomePageState extends State<HomePage> {
                       style:
                           TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                     ),
-                    subtitle: Text('10 task'),
+                    subtitle: Text(
+                      '10 task',
+                      // style: TextStyle(fontSize: 14),
+                    ),
                   ),
                   ListTile(
                     onTap: () {
@@ -601,7 +604,9 @@ class _HomePageState extends State<HomePage> {
                       style:
                           TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                     ),
-                    subtitle: Text('10 task'),
+                    subtitle: Text('10 task',
+                        style: TextStyle(
+                            fontSize: 12, color: Colors.grey.shade500)),
                   )
                 ],
               ),
