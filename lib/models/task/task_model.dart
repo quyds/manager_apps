@@ -1,12 +1,15 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import '../../core/extensions/date_format.dart';
+
 class TaskModel {
   late final String? id;
   late final String? title;
   late final String? description;
   late final String? estimateTime;
   late final String? completeTime;
-  late final String? timeStamp;
+  late final DateTime? createdAt;
+  late final DateTime? updatedAt;
   late final String? state;
   late final String? employee;
   late final String? project;
@@ -17,7 +20,7 @@ class TaskModel {
       this.description,
       this.estimateTime,
       this.completeTime,
-      this.timeStamp,
+      this.createdAt,
       this.state,
       this.employee,
       this.project});
@@ -29,7 +32,7 @@ class TaskModel {
         description: map['description'],
         estimateTime: map['estimateTime'],
         completeTime: map['completeTime'],
-        timeStamp: map['timeStamp'],
+        createdAt: (map['createdAt'] as Timestamp).toDate(),
         state: map['state'],
         employee: map['employee'],
         project: map['project']);
@@ -42,7 +45,7 @@ class TaskModel {
       'description': description,
       'estimateTime': estimateTime,
       'completeTime': completeTime,
-      'timeStamp': FieldValue.serverTimestamp(),
+      'createdAt': FieldValue.serverTimestamp(),
       'state': state,
       'employee': employee,
       'project': project,

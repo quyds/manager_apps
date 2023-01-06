@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:manager_apps/views/auth/login_page.dart';
 import 'package:manager_apps/views/auth/register_page.dart';
@@ -18,7 +19,8 @@ class RouteGenerator {
       case ('/EditProfile'):
         return MaterialPageRoute(builder: (context) => EditProfilePage());
       case ('/CreateTask'):
-        return MaterialPageRoute(builder: (context) => CreateTaskPage());
+        return MaterialPageRoute(
+            builder: (context) => CreateTaskPage(), settings: settings);
       case ('/ListTask'):
         return MaterialPageRoute(builder: (context) => ListTaskPage());
       case ('/LogIn'):

@@ -31,6 +31,7 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
 
   @override
   Widget build(BuildContext context) {
+    var taskDetail = ModalRoute.of(context)?.settings.arguments;
     return Scaffold(
         body: SingleChildScrollView(
       child: Container(
@@ -144,6 +145,7 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
                           Container(
                             // width: 220,
                             child: DropdownButton<String>(
+                              hint: Text('Chọn trạng thái'),
                               value: selectedStateValue,
                               elevation: 16,
                               style: CustomTextStyle.subOfTextStyle,
@@ -204,6 +206,7 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
                                 return Row(
                                   children: [
                                     DropdownButton(
+                                      hint: Text('Chọn nhân viên'),
                                       elevation: 16,
                                       style: CustomTextStyle.subOfTextStyle,
                                       underline: Container(
@@ -273,7 +276,8 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
                           ),
                           child: Text('Create Task'),
                           onPressed: () {
-                            postTaskDetailsToFirestore();
+                            print('111 ${taskDetail}');
+                            // postTaskDetailsToFirestore();
                           },
                         ),
                       )

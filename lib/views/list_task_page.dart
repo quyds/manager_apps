@@ -1,11 +1,27 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:manager_apps/models/task/task_model.dart';
-import '../services/data.dart';
-import 'widgets/task_item.dart';
 
-class ListTaskPage extends StatelessWidget {
+import '../core/extensions/custom_style.dart';
+import '../core/extensions/date_format.dart';
+import '../core/repositories/list_state.dart';
+
+class ListTaskPage extends StatefulWidget {
+  @override
+  State<ListTaskPage> createState() => _ListTaskPageState();
+}
+
+class _ListTaskPageState extends State<ListTaskPage> {
+  var selectedStateValue;
+  List filterState = [];
+
+  @override
+  void initState() {
+    selectedStateValue = list.first;
+    filterStateFromFb(list.first);
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -31,8 +47,25 @@ class ListTaskPage extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text('Trang thai'),
-                  Text('In Progress'),
+                  const Text('Trạng thái'),
+                  Container(
+                    height: 20,
+                    child: DropdownButton<String>(
+                      // hint: Text('Chọn trạng thái'),
+                      value: selectedStateValue,
+                      elevation: 16,
+                      style: CustomTextStyle.subOfTextStyle,
+                      onChanged: (value) {
+                        filterStateFromFb(value!);
+                      },
+                      items: list.map<DropdownMenuItem<String>>((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(value),
+                        );
+                      }).toList(),
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -50,13 +83,22 @@ class ListTaskPage extends StatelessWidget {
                       return Text(snapshot.error.toString());
                     }
                     if (snapshot.hasData) {
-                      if (snapshot.data!.docs.length == 0) {
-                        return Text('No Tasks Found');
+                      // if (snapshot.data!.docs.length == 0)
+                      if (filterState.length == 0) {
+                        return Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: const [Text('No Tasks')],
+                        );
                       }
-                      // return
-                      ListView.builder(
-                          itemCount: snapshot.data!.docs.length,
+                      print('123 ${filterState.length}');
+                      return ListView.builder(
+                          itemCount: filterState.length == 0
+                              ? snapshot.data!.docs.length
+                              : filterState.length,
                           itemBuilder: ((context, index) {
+                            TaskModel filterTaskModel =
+                                TaskModel.fromMap(filterState[index]);
+
                             TaskModel taskModel = TaskModel.fromMap(
                                 snapshot.data!.docs[index].data());
                             return Container(
@@ -66,14 +108,25 @@ class ListTaskPage extends StatelessWidget {
                                 child: Padding(
                                   padding: const EdgeInsets.all(8.0),
                                   child: ListTile(
-                                    // onTap: () {
-                                    //   Navigator.of(context).pushNamed(
-                                    //       '/TaskDetail',
-                                    //       arguments: taskModel);
-                                    // },
+                                    onTap: () {
+                                      Navigator.of(context)
+                                          .pushNamed('/CreateTask', arguments: {
+                                        'title': filterTaskModel.title,
+                                        'description':
+                                            filterTaskModel.description,
+                                        'estimateTime':
+                                            filterTaskModel.estimateTime,
+                                        'completeTime':
+                                            filterTaskModel.completeTime,
+                                        'state': filterTaskModel.state,
+                                        'employee': filterTaskModel.employee,
+                                      });
+                                    },
                                     // leading: Icon(Icons.task),
                                     title: Text(
-                                      taskModel.title ?? '',
+                                      filterTaskModel.title ??
+                                          taskModel.title ??
+                                          '',
                                       style: TextStyle(fontSize: 18),
                                     ),
                                     subtitle: Container(
@@ -83,7 +136,9 @@ class ListTaskPage extends StatelessWidget {
                                             CrossAxisAlignment.start,
                                         children: [
                                           Text(
-                                            taskModel.description ?? '',
+                                            filterTaskModel.description ??
+                                                taskModel.description ??
+                                                '',
                                             style: TextStyle(fontSize: 14),
                                           ),
                                           Container(
@@ -102,8 +157,10 @@ class ListTaskPage extends StatelessWidget {
                                                   MainAxisAlignment
                                                       .spaceBetween,
                                               children: [
-                                                Text('${taskModel.state}'),
-                                                Text('${taskModel.timeStamp}')
+                                                Text(
+                                                    '${filterTaskModel.state ?? taskModel.state}'),
+                                                Text(
+                                                    '${getFormatedDate(filterTaskModel.createdAt) ?? getFormatedDate(taskModel.createdAt)}')
                                               ],
                                             ),
                                           )
@@ -120,10 +177,78 @@ class ListTaskPage extends StatelessWidget {
                               ),
                             );
                           }));
+
+                      // return ListView.builder(
+                      //     itemCount: snapshot.data!.docs.length,
+                      //     itemBuilder: ((context, index) {
+                      //       TaskModel taskModel = TaskModel.fromMap(
+                      //           snapshot.data!.docs[index].data());
+                      //       return Container(
+                      //         margin: EdgeInsets.all(5),
+                      //         child: Card(
+                      //           elevation: 5,
+                      //           child: Padding(
+                      //             padding: const EdgeInsets.all(8.0),
+                      //             child: ListTile(
+                      //               onTap: () {
+                      //                 Navigator.of(context).pushNamed(
+                      //                     '/TaskDetail',
+                      //                     arguments: taskModel);
+                      //               },
+                      //               // leading: Icon(Icons.task),
+                      //               title: Text(
+                      //                 taskModel.title ?? '',
+                      //                 style: TextStyle(fontSize: 18),
+                      //               ),
+                      //               subtitle: Container(
+                      //                 margin: EdgeInsets.only(top: 10),
+                      //                 child: Column(
+                      //                   crossAxisAlignment:
+                      //                       CrossAxisAlignment.start,
+                      //                   children: [
+                      //                     Text(
+                      //                       taskModel.description ?? '',
+                      //                       style: TextStyle(fontSize: 14),
+                      //                     ),
+                      //                     Container(
+                      //                       margin: EdgeInsets.only(top: 10),
+                      //                       padding: EdgeInsets.only(top: 5),
+                      //                       decoration: BoxDecoration(
+                      //                         border: Border(
+                      //                           top: BorderSide(
+                      //                             color: Colors.grey,
+                      //                             width: 1.0,
+                      //                           ),
+                      //                         ),
+                      //                       ),
+                      //                       child: Row(
+                      //                         mainAxisAlignment:
+                      //                             MainAxisAlignment
+                      //                                 .spaceBetween,
+                      //                         children: [
+                      //                           Text('${taskModel.state}'),
+                      //                           Text(
+                      //                               '${getFormatedDate(taskModel.createdAt)}')
+                      //                         ],
+                      //                       ),
+                      //                     )
+                      //                   ],
+                      //                 ),
+                      //               ),
+                      //               trailing: Icon(
+                      //                 Icons.arrow_forward,
+                      //                 color: Colors.deepPurple,
+                      //                 size: 25,
+                      //               ),
+                      //             ),
+                      //           ),
+                      //         ),
+                      //       );
+                      //     }));
                     }
                     return Center(
-                        // child: CircularProgressIndicator(),
-                        );
+                      child: CircularProgressIndicator(),
+                    );
                   },
                 )),
           ),
@@ -136,5 +261,20 @@ class ListTaskPage extends StatelessWidget {
         child: const Icon(Icons.add),
       ),
     );
+  }
+
+  void filterStateFromFb(String query) async {
+    selectedStateValue = query;
+    final result = await FirebaseFirestore.instance
+        .collection('tasks')
+        .where('state', isEqualTo: query)
+        .get();
+
+    print('selectedStateValue ${result.size}');
+
+    setState(() {
+      filterState = result.docs.map((e) => e.data()).toList();
+      print('filterState ${filterState}');
+    });
   }
 }
