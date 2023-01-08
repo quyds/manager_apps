@@ -320,17 +320,22 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
   }
 
   updateTaskDetail(BuildContext context) async {
-    //   Map<String, dynamic> map = Map();
+    FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
+    final idTask = firebaseFirestore.collection('tasks').doc().id;
+    Map<String, dynamic> map = Map();
 
-    //   map['name'] = nameController.text;
-    //   map['phone'] = phoneController.text;
-    //   map['level'] = levelController.text;
+    map['title'] = titleController.text;
+    map['description'] = desController.text;
+    map['estimateTime'] = estimateTimeController.text;
+    map['completeTime'] = completeTimeController.text;
+    map['state'] = selectedState;
+    map['employee'] = selectedEmployee;
 
-    //   await FirebaseFirestore.instance
-    //       .collection('users')
-    //       .doc(FirebaseAuth.instance.currentUser?.uid)
-    //       .update(map);
-    //   Navigator.pop(context);
+    await FirebaseFirestore.instance
+        .collection('tasks')
+        .doc(idTask)
+        .update(map);
+    Navigator.pop(context);
   }
 
   void postTaskDetailsToFirestore() async {
@@ -345,7 +350,6 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
       completeTime: completeTimeController.text,
       state: selectedState,
       employee: selectedEmployee,
-      // project: map['project'],
     );
 
     await firebaseFirestore
