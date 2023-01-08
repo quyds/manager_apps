@@ -109,18 +109,9 @@ class _ListTaskPageState extends State<ListTaskPage> {
                                   padding: const EdgeInsets.all(8.0),
                                   child: ListTile(
                                     onTap: () {
-                                      Navigator.of(context)
-                                          .pushNamed('/CreateTask', arguments: {
-                                        'title': filterTaskModel.title,
-                                        'description':
-                                            filterTaskModel.description,
-                                        'estimateTime':
-                                            filterTaskModel.estimateTime,
-                                        'completeTime':
-                                            filterTaskModel.completeTime,
-                                        'state': filterTaskModel.state,
-                                        'employee': filterTaskModel.employee,
-                                      });
+                                      Navigator.of(context).pushNamed(
+                                          '/CreateTask',
+                                          arguments: filterState[index]);
                                     },
                                     // leading: Icon(Icons.task),
                                     title: Text(

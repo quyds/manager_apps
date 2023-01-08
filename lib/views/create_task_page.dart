@@ -12,7 +12,8 @@ import '../core/repositories/list_state.dart';
 import '../models/task/task_model.dart';
 
 class CreateTaskPage extends StatefulWidget {
-  const CreateTaskPage({super.key});
+  final TaskModel? dataTask;
+  const CreateTaskPage({super.key, this.dataTask});
 
   @override
   State<CreateTaskPage> createState() => _CreateTaskPageState();
@@ -20,18 +21,35 @@ class CreateTaskPage extends StatefulWidget {
 
 class _CreateTaskPageState extends State<CreateTaskPage> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  var selectedCurrency, selectedStateValue;
+  var selectedEmployee, selectedState;
 
-  TextEditingController titleController = TextEditingController();
-  TextEditingController desController = TextEditingController();
-  TextEditingController estimateTimeController = TextEditingController();
-  TextEditingController completeTimeController = TextEditingController();
-  TextEditingController stateController = TextEditingController();
-  TextEditingController employeeController = TextEditingController();
+  late TextEditingController titleController;
+  late TextEditingController desController;
+  late TextEditingController estimateTimeController;
+  late TextEditingController completeTimeController;
+
+  @override
+  void initState() {
+    if (widget.dataTask == null) {
+      titleController = TextEditingController();
+      desController = TextEditingController();
+      estimateTimeController = TextEditingController();
+      completeTimeController = TextEditingController();
+    } else {
+      titleController = TextEditingController(text: widget.dataTask?.title);
+      desController = TextEditingController(text: widget.dataTask?.description);
+      estimateTimeController =
+          TextEditingController(text: widget.dataTask?.estimateTime);
+      completeTimeController =
+          TextEditingController(text: widget.dataTask?.completeTime);
+      selectedEmployee = widget.dataTask?.employee;
+      selectedState = widget.dataTask?.state;
+    }
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
-    var taskDetail = ModalRoute.of(context)?.settings.arguments;
     return Scaffold(
         body: SingleChildScrollView(
       child: Container(
@@ -44,10 +62,15 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text(
-                    'New Task',
-                    style: CustomTextStyle.topTitleOfTextStyle,
-                  )
+                  widget.dataTask == null
+                      ? Text(
+                          'New Task',
+                          style: CustomTextStyle.topTitleOfTextStyle,
+                        )
+                      : Text(
+                          'Edit Task',
+                          style: CustomTextStyle.topTitleOfTextStyle,
+                        )
                 ],
               ),
             ),
@@ -146,7 +169,7 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
                             // width: 220,
                             child: DropdownButton<String>(
                               hint: Text('Chọn trạng thái'),
-                              value: selectedStateValue,
+                              value: selectedState,
                               elevation: 16,
                               style: CustomTextStyle.subOfTextStyle,
                               underline: Container(
@@ -155,7 +178,7 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
                               ),
                               onChanged: (value) {
                                 setState(() {
-                                  selectedStateValue = value!;
+                                  selectedState = value!;
                                 });
                               },
                               items: list.map<DropdownMenuItem<String>>(
@@ -213,7 +236,7 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
                                         height: 1,
                                         color: Colors.grey,
                                       ),
-                                      value: selectedCurrency,
+                                      value: selectedEmployee,
                                       isExpanded: false,
                                       items: currencyItems,
                                       onChanged: (currencyValue) {
@@ -228,8 +251,8 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
                                         ScaffoldMessenger.of(context)
                                             .showSnackBar(snackBar);
                                         setState(() {
-                                          selectedCurrency = currencyValue;
-                                          print(selectedCurrency);
+                                          selectedEmployee = currencyValue;
+                                          print(selectedEmployee);
                                         });
                                       },
                                     )
@@ -274,10 +297,14 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
                               ),
                             ),
                           ),
-                          child: Text('Create Task'),
+                          child: widget.dataTask == null
+                              ? Text('Create Task')
+                              : Text('Edit Task'),
                           onPressed: () {
-                            print('111 ${taskDetail}');
-                            // postTaskDetailsToFirestore();
+                            print('111 ${widget.dataTask}');
+                            widget.dataTask == null
+                                ? postTaskDetailsToFirestore()
+                                : updateTaskDetail(context);
                           },
                         ),
                       )
@@ -292,6 +319,20 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
     ));
   }
 
+  updateTaskDetail(BuildContext context) async {
+    //   Map<String, dynamic> map = Map();
+
+    //   map['name'] = nameController.text;
+    //   map['phone'] = phoneController.text;
+    //   map['level'] = levelController.text;
+
+    //   await FirebaseFirestore.instance
+    //       .collection('users')
+    //       .doc(FirebaseAuth.instance.currentUser?.uid)
+    //       .update(map);
+    //   Navigator.pop(context);
+  }
+
   void postTaskDetailsToFirestore() async {
     FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
     final idTask = firebaseFirestore.collection('tasks').doc().id;
@@ -302,8 +343,8 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
       description: desController.text,
       estimateTime: estimateTimeController.text,
       completeTime: completeTimeController.text,
-      state: selectedStateValue,
-      employee: selectedCurrency,
+      state: selectedState,
+      employee: selectedEmployee,
       // project: map['project'],
     );
 
@@ -316,6 +357,7 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
       content: Text('Đăng ký thành công !'),
     );
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
+
     Navigator.of(context).pushNamed('/ListTask');
   }
 }
