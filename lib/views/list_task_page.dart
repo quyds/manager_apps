@@ -35,10 +35,9 @@ class _ListTaskPageState extends State<ListTaskPage> {
               color: Colors.white,
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black,
-                  offset: Offset(20.0, 10.0),
-                  blurRadius: 20.0,
-                  spreadRadius: 40.0,
+                  offset: Offset(0, 1),
+                  blurRadius: 5,
+                  color: Colors.black.withOpacity(0.3),
                 )
               ],
             ),
@@ -51,7 +50,6 @@ class _ListTaskPageState extends State<ListTaskPage> {
                   Container(
                     height: 20,
                     child: DropdownButton<String>(
-                      // hint: Text('Chọn trạng thái'),
                       value: selectedStateValue,
                       elevation: 16,
                       style: CustomTextStyle.subOfTextStyle,

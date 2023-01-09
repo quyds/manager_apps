@@ -21,7 +21,7 @@ class CreateTaskPage extends StatefulWidget {
 
 class _CreateTaskPageState extends State<CreateTaskPage> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  var selectedEmployee, selectedState;
+  var selectedEmployee, selectedState, selectedProject;
 
   late TextEditingController titleController;
   late TextEditingController desController;
@@ -192,9 +192,6 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
                           )
                         ],
                       ),
-                      SizedBox(
-                        width: 20,
-                      ),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -253,6 +250,74 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
                                         setState(() {
                                           selectedEmployee = currencyValue;
                                           print(selectedEmployee);
+                                        });
+                                      },
+                                    )
+                                  ],
+                                );
+                              }
+                            },
+                          ),
+                        ],
+                      ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            child: Text(
+                              'Project',
+                              style: CustomTextStyle.labelOfTextStyle,
+                            ),
+                          ),
+                          StreamBuilder<QuerySnapshot>(
+                            stream: getDataCollection('projects'),
+                            builder: (context, snapshot) {
+                              if (!snapshot.hasData) {
+                                return new CircularProgressIndicator();
+                              } else {
+                                List<DropdownMenuItem> currencyItems = [];
+                                for (int i = 0;
+                                    i < snapshot.data!.docs.length;
+                                    i++) {
+                                  DocumentSnapshot snap =
+                                      snapshot.data!.docs[i];
+                                  currencyItems.add(
+                                    DropdownMenuItem(
+                                      child: Text(
+                                        snap['title'],
+                                        style: CustomTextStyle.subOfTextStyle,
+                                      ),
+                                      value: "${snap.id}",
+                                    ),
+                                  );
+                                }
+                                return Row(
+                                  children: [
+                                    DropdownButton(
+                                      hint: Text('Chọn dự án'),
+                                      elevation: 16,
+                                      style: CustomTextStyle.subOfTextStyle,
+                                      underline: Container(
+                                        height: 1,
+                                        color: Colors.grey,
+                                      ),
+                                      value: selectedProject,
+                                      isExpanded: false,
+                                      items: currencyItems,
+                                      onChanged: (currencyValue) {
+                                        const snackBar = SnackBar(
+                                          content: Text(
+                                            'Da chon !',
+                                            style: TextStyle(
+                                              color: Color(0xff11b719),
+                                            ),
+                                          ),
+                                        );
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(snackBar);
+                                        setState(() {
+                                          selectedProject = currencyValue;
+                                          print(selectedProject);
                                         });
                                       },
                                     )
@@ -329,6 +394,7 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
     map['state'] = selectedState;
     map['employee'] = selectedEmployee;
     map['updatedAt'] = FieldValue.serverTimestamp();
+    map['project'] = selectedProject;
 
     await FirebaseFirestore.instance
         .collection('tasks')
@@ -350,6 +416,7 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
       completeTime: completeTimeController.text,
       state: selectedState,
       employee: selectedEmployee,
+      project: selectedProject,
     );
 
     await firebaseFirestore

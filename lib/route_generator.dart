@@ -4,6 +4,8 @@ import 'package:manager_apps/models/task/task_model.dart';
 import 'package:manager_apps/views/auth/login_page.dart';
 import 'package:manager_apps/views/auth/register_page.dart';
 import 'package:manager_apps/views/edit_profile_page.dart';
+import 'package:manager_apps/views/form_project_page.dart';
+import 'package:manager_apps/views/list_project_page.dart';
 import 'package:manager_apps/views/list_task_page.dart';
 import 'package:manager_apps/views/main_page.dart';
 
@@ -23,12 +25,15 @@ class RouteGenerator {
         TaskModel? taskModelDetail = settings.arguments != null
             ? TaskModel.fromMap(settings.arguments)
             : null;
-        // print(' router ${taskModelDetail}');
         return MaterialPageRoute(
             builder: (context) => CreateTaskPage(dataTask: taskModelDetail),
             settings: settings);
       case ('/ListTask'):
         return MaterialPageRoute(builder: (context) => ListTaskPage());
+      case ('/FormProject'):
+        return MaterialPageRoute(builder: (context) => FormProjectPage());
+      case ('/ListProject'):
+        return MaterialPageRoute(builder: (context) => ListProjectPage());
       case ('/LogIn'):
         return MaterialPageRoute(builder: (context) => LogIn());
       case ('/Register'):

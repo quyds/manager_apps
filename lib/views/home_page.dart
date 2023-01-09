@@ -129,11 +129,23 @@ class _HomePageState extends State<HomePage> {
           children: <Widget>[
             Container(
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
                     'Project',
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(right: 10),
+                    child: IconButton(
+                      onPressed: () {
+                        Navigator.of(context).pushNamed('/FormProject');
+                      },
+                      icon: Icon(
+                        Icons.add,
+                        color: Colors.deepPurple.shade900,
+                      ),
+                    ),
                   ),
                 ],
               ),
@@ -146,73 +158,78 @@ class _HomePageState extends State<HomePage> {
                 // This next line does the trick.
                 scrollDirection: Axis.horizontal,
                 children: <Widget>[
-                  Container(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Text(
-                          '10 Task',
-                          style: TextStyle(fontSize: 16, color: Colors.white),
-                        ),
-                        Text(
-                          'App Weather',
-                          style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white),
-                        ),
-                        Text(
-                          'August 2022',
-                          style: TextStyle(fontSize: 16, color: Colors.white),
-                        ),
-                        Container(
-                          width: 80,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              Container(
-                                width: 25,
-                                height: 25,
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  image: DecorationImage(
-                                      image: AssetImage(
-                                          'assets/images/avatar.png'),
-                                      fit: BoxFit.contain),
-                                ),
-                              ),
-                              Container(
-                                width: 25,
-                                height: 25,
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  image: DecorationImage(
-                                      image: AssetImage(
-                                          'assets/images/avatar.png'),
-                                      fit: BoxFit.contain),
-                                ),
-                              ),
-                              Container(
-                                width: 25,
-                                height: 25,
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  image: DecorationImage(
-                                      image: AssetImage(
-                                          'assets/images/avatar.png'),
-                                      fit: BoxFit.contain),
-                                ),
-                              ),
-                            ],
+                  InkWell(
+                    onTap: () {
+                      Navigator.of(context).pushNamed('/ListProject');
+                    },
+                    child: Container(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Text(
+                            '10 Task',
+                            style: TextStyle(fontSize: 16, color: Colors.white),
                           ),
-                        )
-                      ],
+                          Text(
+                            'App Weather',
+                            style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white),
+                          ),
+                          Text(
+                            'August 2022',
+                            style: TextStyle(fontSize: 16, color: Colors.white),
+                          ),
+                          Container(
+                            width: 80,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                Container(
+                                  width: 25,
+                                  height: 25,
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    image: DecorationImage(
+                                        image: AssetImage(
+                                            'assets/images/avatar.png'),
+                                        fit: BoxFit.contain),
+                                  ),
+                                ),
+                                Container(
+                                  width: 25,
+                                  height: 25,
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    image: DecorationImage(
+                                        image: AssetImage(
+                                            'assets/images/avatar.png'),
+                                        fit: BoxFit.contain),
+                                  ),
+                                ),
+                                Container(
+                                  width: 25,
+                                  height: 25,
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    image: DecorationImage(
+                                        image: AssetImage(
+                                            'assets/images/avatar.png'),
+                                        fit: BoxFit.contain),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          )
+                        ],
+                      ),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(30),
+                        color: Colors.blue.shade900,
+                      ),
+                      width: 160.0,
                     ),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(30),
-                      color: Colors.blue.shade900,
-                    ),
-                    width: 160.0,
                   ),
                   SizedBox(
                     width: 10,
