@@ -21,7 +21,10 @@ convertTimeStamp(Timestamp timestamp) {
 }
 
 getFormatedDate(DateTime? _date) {
-  DateFormat inputFormat = DateFormat('yyyy-MM-dd HH:mm');
-  String format = inputFormat.format(_date!);
-  return format;
+  if (_date != null) {
+    DateFormat inputFormat = DateFormat('yyyy-MM-dd HH:mm');
+    String format = inputFormat.format(_date);
+    return format;
+  }
+  return null;
 }

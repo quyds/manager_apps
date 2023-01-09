@@ -109,9 +109,17 @@ class _ListTaskPageState extends State<ListTaskPage> {
                                   padding: const EdgeInsets.all(8.0),
                                   child: ListTile(
                                     onTap: () {
-                                      Navigator.of(context).pushNamed(
-                                          '/CreateTask',
-                                          arguments: filterState[index]);
+                                      Navigator.of(context)
+                                          .pushNamed('/CreateTask',
+                                              arguments: filterState[index])
+                                          .then((value) => setState(() {
+                                                if (value != null) {
+                                                  filterTaskModel.updatedAt;
+                                                  selectedStateValue = value;
+                                                  filterStateFromFb(
+                                                      selectedStateValue);
+                                                }
+                                              }));
                                     },
                                     // leading: Icon(Icons.task),
                                     title: Text(
@@ -149,9 +157,13 @@ class _ListTaskPageState extends State<ListTaskPage> {
                                                       .spaceBetween,
                                               children: [
                                                 Text(
-                                                    '${filterTaskModel.state ?? taskModel.state}'),
-                                                Text(
-                                                    '${getFormatedDate(filterTaskModel.createdAt) ?? getFormatedDate(taskModel.createdAt)}')
+                                                    '${filterTaskModel.state}'),
+                                                filterTaskModel.updatedAt ==
+                                                        null
+                                                    ? Text(
+                                                        '${getFormatedDate(filterTaskModel.createdAt)}')
+                                                    : Text(
+                                                        'updated ${getFormatedDate(filterTaskModel.updatedAt)}')
                                               ],
                                             ),
                                           )

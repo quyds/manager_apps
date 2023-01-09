@@ -14,16 +14,18 @@ class TaskModel {
   late final String? employee;
   late final String? project;
 
-  TaskModel(
-      {this.id,
-      this.title,
-      this.description,
-      this.estimateTime,
-      this.completeTime,
-      this.createdAt,
-      this.state,
-      this.employee,
-      this.project});
+  TaskModel({
+    this.id,
+    this.title,
+    this.description,
+    this.estimateTime,
+    this.completeTime,
+    this.createdAt,
+    this.updatedAt,
+    this.state,
+    this.employee,
+    this.project,
+  });
 
   factory TaskModel.fromMap(map) {
     return TaskModel(
@@ -33,6 +35,9 @@ class TaskModel {
         estimateTime: map['estimateTime'],
         completeTime: map['completeTime'],
         createdAt: (map['createdAt'] as Timestamp).toDate(),
+        updatedAt: map['updatedAt'] != null
+            ? (map['updatedAt'] as Timestamp).toDate()
+            : map['updatedAt'],
         state: map['state'],
         employee: map['employee'],
         project: map['project']);
@@ -46,6 +51,7 @@ class TaskModel {
       'estimateTime': estimateTime,
       'completeTime': completeTime,
       'createdAt': FieldValue.serverTimestamp(),
+      'updatedAt': updatedAt,
       'state': state,
       'employee': employee,
       'project': project,
