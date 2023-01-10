@@ -44,6 +44,7 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
           TextEditingController(text: widget.dataTask?.completeTime);
       selectedEmployee = widget.dataTask?.employee;
       selectedState = widget.dataTask?.state;
+      selectedProject = widget.dataTask?.project;
     }
     super.initState();
   }
@@ -160,9 +161,13 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Container(
-                            child: Text(
-                              'State',
-                              style: CustomTextStyle.labelOfTextStyle,
+                            child: SizedBox(
+                              width: 80,
+                              child: Text(
+                                'State',
+                                overflow: TextOverflow.ellipsis,
+                                style: CustomTextStyle.labelOfTextStyle,
+                              ),
                             ),
                           ),
                           Container(
@@ -196,9 +201,13 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Container(
-                            child: Text(
-                              'Employee',
-                              style: CustomTextStyle.labelOfTextStyle,
+                            child: SizedBox(
+                              width: 80,
+                              child: Text(
+                                'Employee',
+                                overflow: TextOverflow.ellipsis,
+                                style: CustomTextStyle.labelOfTextStyle,
+                              ),
                             ),
                           ),
                           StreamBuilder<QuerySnapshot>(
@@ -283,9 +292,13 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
                                       snapshot.data!.docs[i];
                                   currencyItems.add(
                                     DropdownMenuItem(
-                                      child: Text(
-                                        snap['title'],
-                                        style: CustomTextStyle.subOfTextStyle,
+                                      child: SizedBox(
+                                        width: 80,
+                                        child: Text(
+                                          snap['title'],
+                                          overflow: TextOverflow.ellipsis,
+                                          style: CustomTextStyle.subOfTextStyle,
+                                        ),
                                       ),
                                       value: "${snap.id}",
                                     ),
@@ -317,7 +330,8 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
                                             .showSnackBar(snackBar);
                                         setState(() {
                                           selectedProject = currencyValue;
-                                          print(selectedProject);
+                                          print(
+                                              'selectedProject ${selectedProject}');
                                         });
                                       },
                                     )
@@ -401,6 +415,13 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
         .doc(widget.dataTask?.id)
         .update(map);
 
+    await FirebaseFirestore.instance
+        .collection('projects')
+        .doc(selectedProject)
+        .update({
+      'taskArray': FieldValue.arrayUnion([widget.dataTask?.id])
+    });
+
     Navigator.pop(context, widget.dataTask?.state);
   }
 
@@ -423,6 +444,13 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
         .collection('tasks')
         .doc(idTask)
         .set(taskModel.toMap());
+
+    await FirebaseFirestore.instance
+        .collection('projects')
+        .doc(selectedProject)
+        .update({
+      'taskArray': FieldValue.arrayUnion([idTask])
+    });
 
     const snackBar = SnackBar(
       content: Text('Đăng ký thành công !'),

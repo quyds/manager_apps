@@ -7,7 +7,7 @@ class ProjectModel {
   late final String? description;
   late final DateTime? createdAt;
   late final DateTime? updatedAt;
-  late List? taskArray;
+  late final List? taskArray;
 
   ProjectModel({
     this.id,
@@ -20,15 +20,21 @@ class ProjectModel {
 
   factory ProjectModel.fromMap(map) {
     return ProjectModel(
-      id: map['id'],
-      title: map['title'],
-      description: map['description'],
-      createdAt: (map['createdAt'] as Timestamp).toDate(),
-      updatedAt: map['updatedAt'] != null
-          ? (map['updatedAt'] as Timestamp).toDate()
-          : map['updatedAt'],
-      taskArray: map['taskArray'],
-    );
+        id: map['id'] ?? '',
+        title: map['title'] ?? '',
+        description: map['description'] ?? '',
+        createdAt: map['createdAt'] != null
+            ? (map['createdAt'] as Timestamp).toDate()
+            : null,
+        updatedAt: map['updatedAt'] != null
+            ? (map['updatedAt'] as Timestamp).toDate()
+            : null,
+        taskArray: map['taskArray']
+        // == null
+        //     ? null
+        //     : List<TaskModel>.from(
+        //         map["taskArray"].map((x) => TaskModel.fromMap(x))),
+        );
   }
 
   Map<String, dynamic> toMap() {
@@ -38,7 +44,9 @@ class ProjectModel {
       'description': description,
       'createdAt': FieldValue.serverTimestamp(),
       'updatedAt': updatedAt,
-      'taskArray': taskArray,
+      'taskArray': taskArray == null
+          ? null
+          : List<dynamic>.from(taskArray!.map((x) => x.toMap())),
     };
   }
 }

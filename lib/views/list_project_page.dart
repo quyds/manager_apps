@@ -1,4 +1,7 @@
+import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_expanded_tile/flutter_expanded_tile.dart';
 import 'package:manager_apps/models/project/project_model.dart';
@@ -14,6 +17,7 @@ class ListProjectPage extends StatefulWidget {
 }
 
 class _ListProjectPageState extends State<ListProjectPage> {
+  List filterProj = [];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -74,27 +78,70 @@ class _ListProjectPageState extends State<ListProjectPage> {
                             children: const [Text('No Tasks')],
                           );
                         }
+
                         return ListView.builder(
-                            itemCount: snapshot.data!.docs.length,
-                            itemBuilder: ((context, index) {
-                              ProjectModel? projectModel = ProjectModel.fromMap(
-                                  snapshot.data!.docs[index].data());
-                              return Column(
-                                children: <Widget>[
-                                  ExpansionTile(
-                                    title: Text(projectModel.title ?? ''),
-                                    subtitle:
-                                        Text(projectModel.description ?? ''),
-                                    children: [
-                                      ListTile(
-                                        title: Text(
-                                            '11 ${projectModel.taskArray![index]}'),
-                                      )
-                                    ],
-                                  )
-                                ],
-                              );
-                            }));
+                          itemCount: snapshot.data!.docs.length,
+                          itemBuilder: ((context, index) {
+                            ProjectModel? projectModel = ProjectModel.fromMap(
+                                snapshot.data!.docs[index].data());
+
+                            print('object ${snapshot.data!.docs}');
+                            return Column(
+                              children: <Widget>[
+                                ExpansionTile(
+                                  title: Text(projectModel.title ?? ''),
+                                  subtitle:
+                                      Text(projectModel.description ?? ''),
+                                  children: [
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children:
+                                          projectModel.taskArray!.map((e) {
+                                        StreamBuilder<QuerySnapshot>(
+                                          stream: FirebaseFirestore.instance
+                                              .collection('tasks')
+                                              .where('id', isEqualTo: e)
+                                              .get()
+                                              .asStream(),
+                                          builder: (context, snapshot) {
+                                            if (snapshot.hasError) {
+                                              return Text(
+                                                  snapshot.error.toString());
+                                            }
+                                            if (snapshot.hasData) {
+                                              return ListView.builder(
+                                                itemCount:
+                                                    snapshot.data!.docs.length,
+                                                itemBuilder: (context, index) {
+                                                  TaskModel filterTaskModel =
+                                                      TaskModel.fromMap(snapshot
+                                                          .data!.docs[index]
+                                                          .data());
+                                                  return Center();
+                                                },
+                                              );
+                                            }
+                                            return Center(
+                                              child:
+                                                  CircularProgressIndicator(),
+                                            );
+                                          },
+                                        );
+                                        return ListTile(
+                                          onTap: () {
+                                            searchTaskByProject(e);
+                                          },
+                                          title: Text(e),
+                                        );
+                                      }).toList(),
+                                    )
+                                  ],
+                                )
+                              ],
+                            );
+                          }),
+                        );
                       }
                       return Center(
                         child: CircularProgressIndicator(),
@@ -104,5 +151,21 @@ class _ListProjectPageState extends State<ListProjectPage> {
             )
           ],
         ));
+  }
+
+  searchTaskByProject(String query) async {
+    final result = await FirebaseFirestore.instance
+        .collection('tasks')
+        .where('id', isEqualTo: query)
+        .get();
+
+    // query(collection(db, "cities"), where("capital", "==", true));
+    setState(() {
+      filterProj = result.docs.map((e) => e.data()).toList();
+      print('filterProj ${filterProj}');
+    });
+    return ListTile(
+      title: Text('s'),
+    );
   }
 }

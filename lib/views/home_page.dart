@@ -33,7 +33,9 @@ class _HomePageState extends State<HomePage> {
                     stream: getDataDoc(currentUser!.uid, "users"),
                     builder: (context, snapshot) {
                       if (!snapshot.hasData) {
-                        return new CircularProgressIndicator();
+                        return Center(
+                          child: CircularProgressIndicator(),
+                        );
                       }
                       var document = snapshot.data;
                       return Text(
@@ -51,7 +53,9 @@ class _HomePageState extends State<HomePage> {
                     stream: getDataDoc(currentUser.uid, "users"),
                     builder: (context, snapshot) {
                       if (!snapshot.hasData) {
-                        return new CircularProgressIndicator();
+                        return Center(
+                          child: CircularProgressIndicator(),
+                        );
                       }
                       var document = snapshot.data;
                       return Text(
@@ -71,7 +75,9 @@ class _HomePageState extends State<HomePage> {
                 stream: getDataDoc(currentUser.uid, "users"),
                 builder: (context, snapshot) {
                   if (!snapshot.hasData) {
-                    return new CircularProgressIndicator();
+                    return Center(
+                      child: CircularProgressIndicator(),
+                    );
                   }
                   var document = snapshot.data;
                   var image = document!["profileImage"];
