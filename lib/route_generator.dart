@@ -22,11 +22,15 @@ class RouteGenerator {
       case ('/EditProfile'):
         return MaterialPageRoute(builder: (context) => EditProfilePage());
       case ('/CreateTask'):
+        // String? projectId = settings.arguments as String;
         TaskModel? taskModelDetail = settings.arguments != null
             ? TaskModel.fromMap(settings.arguments)
             : null;
         return MaterialPageRoute(
-            builder: (context) => CreateTaskPage(dataTask: taskModelDetail),
+            builder: (context) => CreateTaskPage(
+                  dataTask: taskModelDetail,
+                  // projectId: projectId,
+                ),
             settings: settings);
       case ('/ListTask'):
         return MaterialPageRoute(builder: (context) => ListTaskPage());

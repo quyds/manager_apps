@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/src/material/list_tile.dart';
 
 import '../../core/extensions/date_format.dart';
 
@@ -62,4 +63,6 @@ class TaskModel {
   String toString() {
     return '$title $description $estimateTime $completeTime';
   }
+
+  map(ListTile Function(dynamic e) param0) {}
 }

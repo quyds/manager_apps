@@ -13,7 +13,8 @@ import '../models/task/task_model.dart';
 
 class CreateTaskPage extends StatefulWidget {
   final TaskModel? dataTask;
-  const CreateTaskPage({super.key, this.dataTask});
+  final String? projectId;
+  const CreateTaskPage({super.key, this.dataTask, this.projectId});
 
   @override
   State<CreateTaskPage> createState() => _CreateTaskPageState();
@@ -292,6 +293,7 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
                                       snapshot.data!.docs[i];
                                   currencyItems.add(
                                     DropdownMenuItem(
+                                      value: "${snap.id}",
                                       child: SizedBox(
                                         width: 80,
                                         child: Text(
@@ -300,7 +302,6 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
                                           style: CustomTextStyle.subOfTextStyle,
                                         ),
                                       ),
-                                      value: "${snap.id}",
                                     ),
                                   );
                                 }

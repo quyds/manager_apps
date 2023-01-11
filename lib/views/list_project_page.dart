@@ -1,9 +1,10 @@
-import 'dart:math';
+import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_expanded_tile/flutter_expanded_tile.dart';
+import 'package:manager_apps/core/extensions/custom_style.dart';
 import 'package:manager_apps/models/project/project_model.dart';
 import 'package:manager_apps/models/task/task_model.dart';
 
@@ -17,7 +18,9 @@ class ListProjectPage extends StatefulWidget {
 }
 
 class _ListProjectPageState extends State<ListProjectPage> {
-  List filterProj = [];
+  // late List listTask;
+  List? _listTasks = [];
+  TaskModel? taskModel;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -84,58 +87,57 @@ class _ListProjectPageState extends State<ListProjectPage> {
                           itemBuilder: ((context, index) {
                             ProjectModel? projectModel = ProjectModel.fromMap(
                                 snapshot.data!.docs[index].data());
-
-                            print('object ${snapshot.data!.docs}');
+                            List _listTasksId = projectModel.taskArray!;
+                            for (var e in _listTasksId) {
+                              getTaskByProject(e).then((value) {
+                                // value.map((item) => {
+                                //       _listTasks.add(item.toString()),
+                                //     });
+                                // TaskModel? taskModel = TaskModel.fromMap(value);
+                                print('va ${value.toList()}');
+                                return _listTasks?.add(value.toList());
+                              });
+                            }
+                            print(
+                                'objecteqweqweqw ${_listTasks!.map((e) => e.toString())}');
                             return Column(
                               children: <Widget>[
                                 ExpansionTile(
-                                  title: Text(projectModel.title ?? ''),
-                                  subtitle:
-                                      Text(projectModel.description ?? ''),
+                                  title: Text(
+                                    projectModel.title ?? '',
+                                    style: CustomTextStyle.titleOfTextStyle,
+                                  ),
+                                  subtitle: Text(projectModel.description ?? '',
+                                      style: CustomTextStyle.subOfTextStyle),
                                   children: [
+                                    Container(
+                                      child: TextButton(
+                                        style: TextButton.styleFrom(
+                                            backgroundColor: Colors.grey,
+                                            padding: EdgeInsets.all(0)),
+                                        onPressed: () {
+                                          Navigator.of(context).pushNamed(
+                                            '/CreateTask',
+                                          );
+                                        },
+                                        child: Text(
+                                          'Thêm công việc',
+                                          style: TextStyle(fontSize: 12),
+                                        ),
+                                      ),
+                                    ),
                                     Column(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
-                                      children:
-                                          projectModel.taskArray!.map((e) {
-                                        StreamBuilder<QuerySnapshot>(
-                                          stream: FirebaseFirestore.instance
-                                              .collection('tasks')
-                                              .where('id', isEqualTo: e)
-                                              .get()
-                                              .asStream(),
-                                          builder: (context, snapshot) {
-                                            if (snapshot.hasError) {
-                                              return Text(
-                                                  snapshot.error.toString());
-                                            }
-                                            if (snapshot.hasData) {
-                                              return ListView.builder(
-                                                itemCount:
-                                                    snapshot.data!.docs.length,
-                                                itemBuilder: (context, index) {
-                                                  TaskModel filterTaskModel =
-                                                      TaskModel.fromMap(snapshot
-                                                          .data!.docs[index]
-                                                          .data());
-                                                  return Center();
-                                                },
-                                              );
-                                            }
-                                            return Center(
-                                              child:
-                                                  CircularProgressIndicator(),
-                                            );
-                                          },
-                                        );
+                                      children: _listTasksId.map((e) {
                                         return ListTile(
                                           onTap: () {
-                                            searchTaskByProject(e);
+                                            getTaskByProject(e);
                                           },
                                           title: Text(e),
                                         );
                                       }).toList(),
-                                    )
+                                    ),
                                   ],
                                 )
                               ],
@@ -153,19 +155,26 @@ class _ListProjectPageState extends State<ListProjectPage> {
         ));
   }
 
-  searchTaskByProject(String query) async {
-    final result = await FirebaseFirestore.instance
+  Future<Iterable<TaskModel>> getTaskByProject(String query) {
+    TaskModel? filterProj;
+    final result = FirebaseFirestore.instance
         .collection('tasks')
         .where('id', isEqualTo: query)
-        .get();
+        .get()
+        .then((value) => value.docs.map((e) {
+              print('11122 ${e.data()}');
+              return filterProj = TaskModel(
+                title: e.data()['title'],
+                description: e.data()['description'],
+              );
+            }));
+    // return result.the
+    // filterProj = result.docs.map((e) {
+    //   return e.data();
+    // });
 
-    // query(collection(db, "cities"), where("capital", "==", true));
-    setState(() {
-      filterProj = result.docs.map((e) => e.data()).toList();
-      print('filterProj ${filterProj}');
-    });
-    return ListTile(
-      title: Text('s'),
-    );
+    print('filterProj---------- ${result}');
+
+    return result;
   }
 }
