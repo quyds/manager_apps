@@ -5,6 +5,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_expanded_tile/flutter_expanded_tile.dart';
 import 'package:manager_apps/core/extensions/custom_style.dart';
+import 'package:manager_apps/models/task_arguments_model.dart';
 import 'package:manager_apps/models/project/project_model.dart';
 import 'package:manager_apps/models/task/task_model.dart';
 
@@ -88,6 +89,7 @@ class _ListProjectPageState extends State<ListProjectPage> {
                             ProjectModel? projectModel = ProjectModel.fromMap(
                                 snapshot.data!.docs[index].data());
                             List _listTasksId = projectModel.taskArray!;
+
                             for (var e in _listTasksId) {
                               getTaskByProject(e).then((value) {
                                 // value.map((item) => {
@@ -116,9 +118,15 @@ class _ListProjectPageState extends State<ListProjectPage> {
                                             backgroundColor: Colors.grey,
                                             padding: EdgeInsets.all(0)),
                                         onPressed: () {
-                                          Navigator.of(context).pushNamed(
-                                            '/CreateTask',
-                                          );
+                                          Navigator.of(context)
+                                              .pushNamed(
+                                                '/CreateTask',
+                                                arguments: TaskArguments(
+                                                    projectId: projectModel.id),
+                                              )
+                                              .then(
+                                                (value) => setState(() {}),
+                                              );
                                         },
                                         child: Text(
                                           'Thêm công việc',
@@ -131,9 +139,9 @@ class _ListProjectPageState extends State<ListProjectPage> {
                                           CrossAxisAlignment.start,
                                       children: _listTasksId.map((e) {
                                         return ListTile(
-                                          onTap: () {
-                                            getTaskByProject(e);
-                                          },
+                                          // onTap: () {
+                                          //   getTaskByProject(e);
+                                          // },
                                           title: Text(e),
                                         );
                                       }).toList(),

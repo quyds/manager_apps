@@ -1,7 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/src/material/list_tile.dart';
-
-import '../../core/extensions/date_format.dart';
 
 class TaskModel {
   late final String? id;
@@ -30,18 +27,19 @@ class TaskModel {
 
   factory TaskModel.fromMap(map) {
     return TaskModel(
-        id: map['id'],
-        title: map['title'],
-        description: map['description'],
-        estimateTime: map['estimateTime'],
-        completeTime: map['completeTime'],
-        createdAt: (map['createdAt'] as Timestamp).toDate(),
-        updatedAt: map['updatedAt'] != null
-            ? (map['updatedAt'] as Timestamp).toDate()
-            : map['updatedAt'],
-        state: map['state'],
-        employee: map['employee'],
-        project: map['project']);
+      id: map['id'] ?? '',
+      title: map['title'],
+      description: map['description'] ?? '',
+      estimateTime: map['estimateTime'] ?? '',
+      completeTime: map['completeTime'] ?? '',
+      createdAt: (map['createdAt'] as Timestamp).toDate(),
+      updatedAt: map['updatedAt'] != null
+          ? (map['updatedAt'] as Timestamp).toDate()
+          : map['updatedAt'],
+      state: map['state'] ?? '',
+      employee: map['employee'] ?? '',
+      project: map['project'] ?? '',
+    );
   }
 
   Map<String, dynamic> toMap() {
@@ -63,6 +61,4 @@ class TaskModel {
   String toString() {
     return '$title $description $estimateTime $completeTime';
   }
-
-  map(ListTile Function(dynamic e) param0) {}
 }

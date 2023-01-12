@@ -4,9 +4,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:manager_apps/const/app_constants.dart';
 import 'package:manager_apps/core/extensions/custom_style.dart';
 import 'package:manager_apps/core/repositories/get_data_collection_doc.dart';
 import 'package:manager_apps/models/user/user_model.dart';
+import 'package:manager_apps/views/home_page.dart';
+import 'package:manager_apps/views/list_task_page.dart';
 
 import '../core/repositories/list_state.dart';
 import '../models/task/task_model.dart';
@@ -47,11 +50,24 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
       selectedState = widget.dataTask?.state;
       selectedProject = widget.dataTask?.project;
     }
+
+    if (widget.projectId == null) {
+      titleController = TextEditingController(text: widget.dataTask?.title);
+      desController = TextEditingController(text: widget.dataTask?.description);
+      estimateTimeController =
+          TextEditingController(text: widget.dataTask?.estimateTime);
+      completeTimeController =
+          TextEditingController(text: widget.dataTask?.completeTime);
+    } else {
+      selectedProject = widget.projectId;
+    }
+
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    print(widget.dataTask?.project);
     return Scaffold(
         body: SingleChildScrollView(
       child: Container(
@@ -83,7 +99,8 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
                   decoration: InputDecoration(
                     border: OutlineInputBorder(
                       borderSide: BorderSide(color: Colors.grey),
-                      borderRadius: BorderRadius.circular(15.0),
+                      borderRadius:
+                          BorderRadius.circular(Dimension.radius.medium),
                     ),
                     labelText: 'Title',
                     labelStyle: CustomTextStyle.labelOfTextStyle,
@@ -92,9 +109,7 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
                   maxLines: 2,
                   onChanged: (text) {},
                 ),
-                SizedBox(
-                  height: 10,
-                ),
+                kSpacingHeight10,
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -106,16 +121,16 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
                               borderSide: BorderSide(
                             color: Colors.grey,
                           )),
-                          contentPadding: EdgeInsets.only(top: 15, bottom: 15),
+                          contentPadding: EdgeInsets.only(
+                              top: Dimension.padding.huge,
+                              bottom: Dimension.padding.huge),
                           labelText: 'Estimate Time',
                           labelStyle: CustomTextStyle.labelOfTextStyle,
                         ),
                         onChanged: (text) {},
                       ),
                     ),
-                    SizedBox(
-                      width: 20,
-                    ),
+                    kSpacingWidth24,
                     Expanded(
                       child: TextField(
                         controller: completeTimeController,
@@ -125,7 +140,9 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
                               color: Colors.grey,
                             ),
                           ),
-                          contentPadding: EdgeInsets.only(top: 15, bottom: 15),
+                          contentPadding: EdgeInsets.only(
+                              top: Dimension.padding.huge,
+                              bottom: Dimension.padding.huge),
                           labelText: 'Complete Time',
                           labelStyle: CustomTextStyle.labelOfTextStyle,
                         ),
@@ -134,9 +151,7 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
                     ),
                   ],
                 ),
-                SizedBox(
-                  height: 10,
-                ),
+                kSpacingHeight10,
                 TextField(
                   controller: desController,
                   decoration: InputDecoration(
@@ -151,9 +166,7 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
                   maxLines: 5,
                   onChanged: (text) {},
                 ),
-                SizedBox(
-                  height: 20,
-                ),
+                kSpacingHeight18,
                 Container(
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -458,6 +471,14 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
     );
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
 
-    Navigator.of(context).pushNamed('/ListTask');
+    if (widget.projectId == null) {
+      Navigator.of(context).pushReplacementNamed('/ListTask');
+      // Navigator.pushAndRemoveUntil(
+      //     context,
+      //     MaterialPageRoute(builder: (BuildContext context) => ListTaskPage()),
+      //     (route) => route is HomePage);
+    } else {
+      Navigator.of(context).pop();
+    }
   }
 }

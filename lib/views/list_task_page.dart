@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:manager_apps/models/task_arguments_model.dart';
 import 'package:manager_apps/models/task/task_model.dart';
 
 import '../core/extensions/custom_style.dart';
@@ -109,15 +110,19 @@ class _ListTaskPageState extends State<ListTaskPage> {
                                     onTap: () {
                                       Navigator.of(context)
                                           .pushNamed('/CreateTask',
-                                              arguments: filterState[index])
-                                          .then((value) => setState(() {
-                                                if (value != null) {
-                                                  filterTaskModel.updatedAt;
-                                                  selectedStateValue = value;
-                                                  filterStateFromFb(
-                                                      selectedStateValue);
-                                                }
-                                              }));
+                                              arguments: TaskArguments(
+                                                  taskModel:
+                                                      filterState[index]))
+                                          .then(
+                                            (value) => setState(() {
+                                              if (value != null) {
+                                                filterTaskModel.updatedAt;
+                                                selectedStateValue = value;
+                                                filterStateFromFb(
+                                                    selectedStateValue);
+                                              }
+                                            }),
+                                          );
                                     },
                                     // leading: Icon(Icons.task),
                                     title: Text(

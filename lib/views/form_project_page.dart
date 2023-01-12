@@ -1,7 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:manager_apps/models/project/project_model.dart';
 
 import '../core/extensions/custom_style.dart';
@@ -39,7 +37,7 @@ class _FormProjectPageState extends State<FormProjectPage> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(
-                    'New Project',
+                    'Tạo dự án',
                     style: CustomTextStyle.topTitleOfTextStyle,
                   )
                 ],
@@ -54,7 +52,7 @@ class _FormProjectPageState extends State<FormProjectPage> {
                       borderSide: BorderSide(color: Colors.grey),
                       borderRadius: BorderRadius.circular(15.0),
                     ),
-                    labelText: 'Title',
+                    labelText: 'Tiêu đề',
                     labelStyle: CustomTextStyle.labelOfTextStyle,
                   ),
                   minLines: 1,
@@ -71,7 +69,7 @@ class _FormProjectPageState extends State<FormProjectPage> {
                         borderSide: BorderSide(
                       color: Colors.grey,
                     )),
-                    labelText: 'Description',
+                    labelText: 'Nội dung',
                     labelStyle: CustomTextStyle.labelOfTextStyle,
                   ),
                   minLines: 2,
@@ -96,7 +94,7 @@ class _FormProjectPageState extends State<FormProjectPage> {
                               ),
                             ),
                           ),
-                          child: Text('Back'),
+                          child: Text('Trở về'),
                           onPressed: () {
                             Navigator.of(context).pop();
                           },
@@ -112,7 +110,7 @@ class _FormProjectPageState extends State<FormProjectPage> {
                               ),
                             ),
                           ),
-                          child: Text('Create Project'),
+                          child: Text('Tạo dự án'),
                           onPressed: () {
                             postProjectDetailsToFirestore();
                           },
@@ -149,6 +147,6 @@ class _FormProjectPageState extends State<FormProjectPage> {
     );
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
 
-    Navigator.of(context).pushNamed('/ListProject');
+    Navigator.of(context).pop();
   }
 }

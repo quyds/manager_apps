@@ -29,7 +29,7 @@ class ProjectModel {
         updatedAt: map['updatedAt'] != null
             ? (map['updatedAt'] as Timestamp).toDate()
             : null,
-        taskArray: map['taskArray']
+        taskArray: map['taskArray'] ?? []
         // == null
         //     ? null
         //     : List<TaskModel>.from(

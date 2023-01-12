@@ -28,3 +28,12 @@ getFormatedDate(DateTime? _date) {
   }
   return null;
 }
+
+getFormatedMonthYear(DateTime? _date) {
+  if (_date != null) {
+    DateFormat inputFormat = DateFormat('MMMM y');
+    String format = inputFormat.format(_date);
+    return format;
+  }
+  return null;
+}

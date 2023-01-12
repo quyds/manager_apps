@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:manager_apps/models/task_arguments_model.dart';
 import 'package:manager_apps/models/task/task_model.dart';
 import 'package:manager_apps/views/auth/login_page.dart';
 import 'package:manager_apps/views/auth/register_page.dart';
@@ -23,14 +24,21 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (context) => EditProfilePage());
       case ('/CreateTask'):
         // String? projectId = settings.arguments as String;
-        TaskModel? taskModelDetail = settings.arguments != null
-            ? TaskModel.fromMap(settings.arguments)
+
+        TaskArguments? arguments = settings.arguments == null
+            ? TaskArguments()
+            : settings.arguments as TaskArguments;
+        TaskModel? taskModelDetail = arguments.taskModel != null
+            ? TaskModel.fromMap(arguments.taskModel)
             : null;
+        print('router ${taskModelDetail} iddd ${arguments.projectId}');
         return MaterialPageRoute(
-            builder: (context) => CreateTaskPage(
-                  dataTask: taskModelDetail,
-                  // projectId: projectId,
-                ),
+            builder: (context) {
+              return CreateTaskPage(
+                dataTask: taskModelDetail,
+                projectId: arguments.projectId,
+              );
+            },
             settings: settings);
       case ('/ListTask'):
         return MaterialPageRoute(builder: (context) => ListTaskPage());
