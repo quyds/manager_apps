@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:manager_apps/models/task_arguments_model.dart';
 import 'package:manager_apps/models/task/task_model.dart';
@@ -17,11 +16,11 @@ class RouteGenerator {
   static Route<dynamic>? routeGenerator(RouteSettings settings) {
     switch (settings.name) {
       case ('/Main'):
-        return MaterialPageRoute(builder: (context) => MainPage());
+        return MaterialPageRoute(builder: (context) => const MainPage());
       case ('/Home'):
-        return MaterialPageRoute(builder: (context) => HomePage());
+        return MaterialPageRoute(builder: (context) => const HomePage());
       case ('/EditProfile'):
-        return MaterialPageRoute(builder: (context) => EditProfilePage());
+        return MaterialPageRoute(builder: (context) => const EditProfilePage());
       case ('/CreateTask'):
         // String? projectId = settings.arguments as String;
 
@@ -31,7 +30,6 @@ class RouteGenerator {
         TaskModel? taskModelDetail = arguments.taskModel != null
             ? TaskModel.fromMap(arguments.taskModel)
             : null;
-        print('router ${taskModelDetail} iddd ${arguments.projectId}');
         return MaterialPageRoute(
             builder: (context) {
               return CreateTaskPage(
@@ -41,20 +39,25 @@ class RouteGenerator {
             },
             settings: settings);
       case ('/ListTask'):
-        return MaterialPageRoute(builder: (context) => ListTaskPage());
+        String? state =
+            settings.arguments != null ? settings.arguments as String : null;
+        return MaterialPageRoute(
+            builder: (context) => ListTaskPage(
+                  currentState: state,
+                ));
       case ('/FormProject'):
-        return MaterialPageRoute(builder: (context) => FormProjectPage());
+        return MaterialPageRoute(builder: (context) => const FormProjectPage());
       case ('/ListProject'):
-        return MaterialPageRoute(builder: (context) => ListProjectPage());
+        return MaterialPageRoute(builder: (context) => const ListProjectPage());
       case ('/LogIn'):
-        return MaterialPageRoute(builder: (context) => LogIn());
+        return MaterialPageRoute(builder: (context) => const LogIn());
       case ('/Register'):
-        return MaterialPageRoute(builder: (context) => Register());
+        return MaterialPageRoute(builder: (context) => const Register());
       default:
         return MaterialPageRoute(
           builder: (context) => Scaffold(
-            appBar: AppBar(title: Text('Error Page')),
-            body: Center(
+            appBar: AppBar(title: const Text('Error Page')),
+            body: const Center(
               child: Text(
                 'Chưa tạo PageRoute',
                 style: TextStyle(fontSize: 36),

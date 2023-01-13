@@ -1,12 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:manager_apps/models/colors_model.dart';
+import 'package:manager_apps/core/extensions/custom_style.dart';
 import 'package:manager_apps/models/project/project_model.dart';
-import 'package:manager_apps/models/task/task_model.dart';
 
+import '../const/app_constants.dart';
 import '../core/extensions/date_format.dart';
 import '../core/repositories/get_data_collection_doc.dart';
+import '../core/repositories/list_state.dart';
+import '../models/user/user_model.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -16,25 +18,20 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  List filterState = [];
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  final List<Color> colors = <Color>[
-    Colors.blue.shade900,
-    Colors.pink.shade900,
-    Colors.green.shade900,
-    Colors.yellow.shade900,
-    Colors.red.shade900,
-  ];
+
   @override
   Widget build(BuildContext context) {
     User? currentUser = _auth.currentUser;
 
     return Scaffold(
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(150),
+        preferredSize: const Size.fromHeight(150),
         child: AppBar(
           toolbarHeight: 150,
           title: Container(
-            margin: EdgeInsets.only(left: 10),
+            margin: EdgeInsets.only(left: Dimension.padding.small),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -43,34 +40,35 @@ class _HomePageState extends State<HomePage> {
                     stream: getDataDoc(currentUser!.uid, "users"),
                     builder: (context, snapshot) {
                       if (!snapshot.hasData) {
-                        return Center(
+                        return const Center(
                           child: CircularProgressIndicator(),
                         );
                       }
                       var document = snapshot.data;
                       return Text(
                         document!["name"] ?? 'Your Name',
-                        style: TextStyle(
+                        style: const TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
                             color: Colors.black),
                       );
                     }),
-                SizedBox(
+                const SizedBox(
                   height: 5,
                 ),
                 StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
                     stream: getDataDoc(currentUser.uid, "users"),
                     builder: (context, snapshot) {
                       if (!snapshot.hasData) {
-                        return Center(
+                        return const Center(
                           child: CircularProgressIndicator(),
                         );
                       }
                       var document = snapshot.data;
                       return Text(
                         document!["level"] ?? 'Your Level',
-                        style: TextStyle(fontSize: 14, color: Colors.black),
+                        style:
+                            const TextStyle(fontSize: 14, color: Colors.black),
                       );
                     }),
               ],
@@ -85,14 +83,14 @@ class _HomePageState extends State<HomePage> {
                 stream: getDataDoc(currentUser.uid, "users"),
                 builder: (context, snapshot) {
                   if (!snapshot.hasData) {
-                    return Center(
+                    return const Center(
                       child: CircularProgressIndicator(),
                     );
                   }
                   var document = snapshot.data;
                   var image = document!["profileImage"];
                   return Container(
-                    margin: EdgeInsets.only(left: 10),
+                    margin: EdgeInsets.only(left: Dimension.padding.medium),
                     decoration: BoxDecoration(
                       border: Border.all(width: 2, color: Colors.white),
                       boxShadow: [
@@ -100,12 +98,12 @@ class _HomePageState extends State<HomePage> {
                           color: Colors.grey.withOpacity(0.35),
                           spreadRadius: 5,
                           blurRadius: 5,
-                          offset: Offset(0, 2),
+                          offset: const Offset(0, 2),
                         )
                       ],
                       shape: BoxShape.circle,
                       image: image == null
-                          ? DecorationImage(
+                          ? const DecorationImage(
                               image: AssetImage('assets/images/avatar.png'),
                               fit: BoxFit.contain)
                           : DecorationImage(
@@ -121,18 +119,18 @@ class _HomePageState extends State<HomePage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Container(
-                  margin: EdgeInsets.only(bottom: 30, right: 10),
+                  margin: EdgeInsets.only(right: Dimension.padding.medium),
                   height: 46,
                   width: 46,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     color: Colors.deepPurple.shade900,
                   ),
-                  child: Icon(
+                  alignment: Alignment.center,
+                  child: const Icon(
                     Icons.notifications,
                     color: Colors.white,
                   ),
-                  alignment: Alignment.center,
                 ),
               ],
             )
@@ -141,73 +139,23 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
       body: SingleChildScrollView(
-        child: Column(
-          children: <Widget>[
-            homeTitle(context, 'Dự án hiện tại', '/FormProject', Icons.add),
-            Container(
-              margin: EdgeInsets.only(left: 10, right: 10),
-              height: 160,
-              child: homeListProject(context),
-            ),
-            homeTitle(context, 'Trạng thái', '', null),
-            Container(
-                margin: EdgeInsets.only(left: 10, right: 10),
-                height: 80,
-                child: Container(
-                  child: Wrap(
-                    alignment: WrapAlignment.center,
-                    spacing: 30,
-                    children: [
-                      FilterChip(
-                        showCheckmark: false,
-                        label: Text('Thực hiện'),
-                        labelStyle: TextStyle(),
-                        onSelected: (bool selected) {
-                          setState(() {});
-                        },
-                        selectedColor: Colors.green.shade500,
-                        backgroundColor: Colors.grey.shade500,
-                      ),
-                      FilterChip(
-                        showCheckmark: false,
-                        label: Text('Đang thực hiện'),
-                        labelStyle: TextStyle(),
-                        onSelected: (bool selected) {
-                          setState(() {});
-                        },
-                        selectedColor: Colors.green.shade500,
-                        backgroundColor: Colors.grey.shade500,
-                      ),
-                      FilterChip(
-                        showCheckmark: false,
-                        label: Text('Hoàn thành'),
-                        labelStyle: TextStyle(),
-                        onSelected: (bool selected) {
-                          setState(() {});
-                        },
-                        selectedColor: Colors.green.shade500,
-                        backgroundColor: Colors.grey.shade500,
-                      ),
-                      FilterChip(
-                        showCheckmark: false,
-                        label: Text('Đã đóng'),
-                        labelStyle: TextStyle(),
-                        onSelected: (bool selected) {
-                          setState(() {});
-                        },
-                        selectedColor: Colors.green.shade500,
-                        backgroundColor: Colors.grey.shade500,
-                      ),
-                    ],
-                  ),
-                )),
-            homeTitle(context, 'Công việc của tôi', '/CreateTask', Icons.add),
-            Container(
-              margin: EdgeInsets.only(left: 10, right: 10),
-              height: 160,
-              child: homeListTask(context),
-            )
-          ],
+        child: Container(
+          margin: EdgeInsets.only(
+              left: Dimension.padding.medium, right: Dimension.padding.medium),
+          child: Column(
+            children: <Widget>[
+              homeTitle(context, 'Dự án hiện tại', '/FormProject', Icons.add),
+              SizedBox(
+                height: 160,
+                child: homeListProject(context),
+              ),
+              homeTitle(context, 'Công việc', '/CreateTask', Icons.add),
+              SizedBox(
+                height: 220,
+                child: homeListTask(context),
+              )
+            ],
+          ),
         ),
       ),
     );
@@ -215,110 +163,68 @@ class _HomePageState extends State<HomePage> {
 
   Container homeTitle(BuildContext context, String title, String route, icons) {
     return Container(
+      margin: EdgeInsets.only(top: Dimension.padding.small),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
             title,
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
           ),
-          Container(
-            margin: EdgeInsets.only(right: 10),
-            child: IconButton(
-              onPressed: () {
-                Navigator.of(context).pushNamed(route).then((value) => setState(
-                      () {},
-                    ));
-              },
-              icon: Icon(
-                icons,
-                color: Colors.deepPurple.shade900,
-              ),
+          IconButton(
+            onPressed: () {
+              Navigator.of(context).pushNamed(route).then((value) => setState(
+                    () {},
+                  ));
+            },
+            icon: Icon(
+              icons,
+              color: Colors.deepPurple.shade900,
             ),
           ),
         ],
       ),
-      margin: EdgeInsets.only(top: 20, left: 10, bottom: 10),
     );
   }
 
-  StreamBuilder<QuerySnapshot<Object?>> homeListTask(BuildContext context) {
-    return StreamBuilder<QuerySnapshot>(
-      stream: FirebaseFirestore.instance.collection('tasks').get().asStream(),
-      builder: (context, snapshot) {
-        if (snapshot.hasError) {
-          return Text(snapshot.error.toString());
-        }
-        if (snapshot.hasData) {
-          if (snapshot.data!.docs.length == 0) {
-            return Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: const [Text('No Tasks')],
+  homeListTask(BuildContext context) {
+    return ListView.builder(
+      itemCount: list.length - 1,
+      itemBuilder: (context, index) {
+        return FutureBuilder(
+          future: getNumTasks(list[index]),
+          builder: (context, snapshot) {
+            return ListTile(
+              onTap: () {
+                Navigator.of(context)
+                    .pushNamed('/ListTask', arguments: list[index]);
+              },
+              leading: Container(
+                height: 46,
+                width: 46,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Colors.deepPurple.shade900,
+                ),
+                alignment: Alignment.center,
+                child: Icon(
+                  icons[index],
+                  color: Colors.white,
+                ),
+              ),
+              title: Text(
+                list[index],
+                style: CustomTextStyle.titleOfTextStyle,
+              ),
+              subtitle: Text(
+                '${snapshot.data?.length} Task',
+                style: CustomTextStyle.subOfTextStyle,
+              ),
             );
-          }
-          return ListView.builder(
-            shrinkWrap: true,
-            itemCount: snapshot.data!.docs.length,
-            itemBuilder: (context, index) {
-              TaskModel? taskModel =
-                  TaskModel.fromMap(snapshot.data!.docs[index].data());
-              print('task leght ${snapshot.data!.docs.length}');
-
-              return ListTile(
-                onTap: () {
-                  Navigator.of(context).pushNamed('/ListTask');
-                },
-                leading: Container(
-                  height: 46,
-                  width: 46,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Colors.deepPurple.shade900,
-                  ),
-                  child: Icon(
-                    Icons.format_list_bulleted,
-                    color: Colors.white,
-                  ),
-                  alignment: Alignment.center,
-                ),
-                title: Text(
-                  'To Do',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                ),
-                subtitle: Text('10 task'),
-              );
-            },
-          );
-        }
-        return Center(
-          child: new CircularProgressIndicator(),
+          },
         );
       },
     );
-
-    // ListTile(
-    //   onTap: () {
-    //     Navigator.of(context).pushNamed('/ListTask');
-    //   },
-    //   leading: Container(
-    //     height: 46,
-    //     width: 46,
-    //     decoration: BoxDecoration(
-    //       shape: BoxShape.circle,
-    //       color: Colors.deepPurple.shade900,
-    //     ),
-    //     child: Icon(
-    //       Icons.format_list_bulleted,
-    //       color: Colors.white,
-    //     ),
-    //     alignment: Alignment.center,
-    //   ),
-    //   title: Text(
-    //     'To Do',
-    //     style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-    //   ),
-    //   subtitle: Text('10 task'),
-    // );
   }
 
   StreamBuilder<QuerySnapshot<Object?>> homeListProject(BuildContext context) {
@@ -330,7 +236,7 @@ class _HomePageState extends State<HomePage> {
           return Text(snapshot.error.toString());
         }
         if (snapshot.hasData) {
-          if (snapshot.data!.docs.length == 0) {
+          if (snapshot.data!.docs.isEmpty) {
             return Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: const [Text('No Project')],
@@ -342,27 +248,40 @@ class _HomePageState extends State<HomePage> {
             itemBuilder: (context, index) {
               ProjectModel? projectModel =
                   ProjectModel.fromMap(snapshot.data!.docs[index].data());
-              print(' qwe ${snapshot.data!.docs.length} ');
+              List? listUsers = [];
+              if (projectModel.taskArray!.isNotEmpty) {
+                for (int i = 0; i < 3; i++) {
+                  listUsers.add(projectModel.employeeArray![i]);
+                }
+              }
               return SingleChildScrollView(
                 child: InkWell(
                   onTap: () {
                     Navigator.of(context).pushNamed('/ListProject');
                   },
                   child: Container(
-                    padding: EdgeInsets.only(left: 10, right: 10),
-                    margin: EdgeInsets.only(right: 10),
+                    padding: EdgeInsets.only(
+                        left: Dimension.padding.small,
+                        right: Dimension.padding.small),
+                    margin: EdgeInsets.only(right: Dimension.padding.small),
                     height: 160,
                     width: 160,
+                    decoration: BoxDecoration(
+                      borderRadius:
+                          BorderRadius.circular(Dimension.radius.gigantic),
+                      color: colors[index],
+                    ),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         Text(
                           '${projectModel.taskArray!.length} Task',
-                          style: TextStyle(fontSize: 16, color: Colors.white),
+                          style: const TextStyle(
+                              fontSize: 16, color: Colors.white),
                         ),
                         Text(
                           projectModel.title ?? '',
-                          style: TextStyle(
+                          style: const TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
                               color: Colors.white),
@@ -370,54 +289,52 @@ class _HomePageState extends State<HomePage> {
                         ),
                         Text(
                           getFormatedMonthYear(projectModel.createdAt),
-                          style: TextStyle(fontSize: 16, color: Colors.white),
+                          style: const TextStyle(
+                              fontSize: 16, color: Colors.white),
                         ),
-                        Container(
-                          width: 80,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              Container(
-                                width: 25,
-                                height: 25,
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  image: DecorationImage(
-                                      image: AssetImage(
-                                          'assets/images/avatar.png'),
-                                      fit: BoxFit.contain),
-                                ),
-                              ),
-                              Container(
-                                width: 25,
-                                height: 25,
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  image: DecorationImage(
-                                      image: AssetImage(
-                                          'assets/images/avatar.png'),
-                                      fit: BoxFit.contain),
-                                ),
-                              ),
-                              Container(
-                                width: 25,
-                                height: 25,
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  image: DecorationImage(
-                                      image: AssetImage(
-                                          'assets/images/avatar.png'),
-                                      fit: BoxFit.contain),
-                                ),
-                              ),
-                            ],
-                          ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: listUsers.isNotEmpty
+                              ? listUsers.map((e) {
+                                  return FutureBuilder(
+                                    future: getUserById(e),
+                                    builder: (context, snapshot) {
+                                      if (snapshot.hasError) {
+                                        return Text(snapshot.error.toString());
+                                      }
+                                      if (snapshot.hasData) {
+                                        String? image =
+                                            snapshot.data?.profileImage;
+                                        return Container(
+                                          width: 25,
+                                          height: 25,
+                                          margin: EdgeInsets.only(
+                                              left: Dimension.padding.tiny,
+                                              right: Dimension.padding.tiny),
+                                          decoration: BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            image: image == null
+                                                ? const DecorationImage(
+                                                    image: AssetImage(
+                                                        'assets/images/avatar.png'),
+                                                    fit: BoxFit.cover)
+                                                : DecorationImage(
+                                                    image: NetworkImage(image),
+                                                    fit: BoxFit.cover,
+                                                  ),
+                                          ),
+                                        );
+                                      } else {
+                                        return const Center(
+                                          child: CircularProgressIndicator(),
+                                        );
+                                      }
+                                    },
+                                  );
+                                }).toList()
+                              : [],
                         ),
                       ],
-                    ),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(30),
-                      color: colors[index],
                     ),
                   ),
                 ),
@@ -425,10 +342,32 @@ class _HomePageState extends State<HomePage> {
             },
           );
         }
-        return Center(
-          child: new CircularProgressIndicator(),
+        return const Center(
+          child: CircularProgressIndicator(),
         );
       },
     );
+  }
+
+  Future<UserModel?> getUserById(String id) async {
+    final doc = FirebaseFirestore.instance.collection("users").doc(id);
+
+    final snapShot = await doc.get();
+
+    if (snapShot.exists) {
+      return UserModel.fromMap(snapShot.data()!);
+    }
+    return null;
+  }
+
+  Future<List?> getNumTasks(String? query) async {
+    final result = await FirebaseFirestore.instance
+        .collection('tasks')
+        .where('state', isEqualTo: query)
+        .get();
+
+    filterState = result.docs.map((e) => e.data()).toList();
+
+    return filterState;
   }
 }

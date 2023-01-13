@@ -8,6 +8,9 @@ import '../core/extensions/date_format.dart';
 import '../core/repositories/list_state.dart';
 
 class ListTaskPage extends StatefulWidget {
+  final String? currentState;
+  const ListTaskPage({super.key, this.currentState});
+
   @override
   State<ListTaskPage> createState() => _ListTaskPageState();
 }
@@ -18,8 +21,13 @@ class _ListTaskPageState extends State<ListTaskPage> {
 
   @override
   void initState() {
-    selectedStateValue = list.first;
-    filterStateFromFb(list.first);
+    if (widget.currentState != null) {
+      selectedStateValue = widget.currentState;
+      filterStateFromFb(widget.currentState);
+    } else {
+      selectedStateValue = list.first;
+      filterStateFromFb(list.first);
+    }
     super.initState();
   }
 
@@ -27,7 +35,7 @@ class _ListTaskPageState extends State<ListTaskPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('List Task'),
+        title: const Text('List Task'),
       ),
       body: Column(
         children: [
@@ -36,7 +44,7 @@ class _ListTaskPageState extends State<ListTaskPage> {
               color: Colors.white,
               boxShadow: [
                 BoxShadow(
-                  offset: Offset(0, 1),
+                  offset: const Offset(0, 1),
                   blurRadius: 5,
                   color: Colors.black.withOpacity(0.3),
                 )
@@ -48,7 +56,7 @@ class _ListTaskPageState extends State<ListTaskPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   const Text('Trạng thái'),
-                  Container(
+                  SizedBox(
                     height: 20,
                     child: DropdownButton<String>(
                       value: selectedStateValue,
@@ -83,15 +91,14 @@ class _ListTaskPageState extends State<ListTaskPage> {
                     }
                     if (snapshot.hasData) {
                       // if (snapshot.data!.docs.length == 0)
-                      if (filterState.length == 0) {
+                      if (filterState.isEmpty) {
                         return Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: const [Text('No Tasks')],
                         );
                       }
-                      print('123 ${filterState.length}');
                       return ListView.builder(
-                          itemCount: filterState.length == 0
+                          itemCount: filterState.isEmpty
                               ? snapshot.data!.docs.length
                               : filterState.length,
                           itemBuilder: ((context, index) {
@@ -101,7 +108,7 @@ class _ListTaskPageState extends State<ListTaskPage> {
                             TaskModel taskModel = TaskModel.fromMap(
                                 snapshot.data!.docs[index].data());
                             return Container(
-                              margin: EdgeInsets.all(5),
+                              margin: const EdgeInsets.all(5),
                               child: Card(
                                 elevation: 5,
                                 child: Padding(
@@ -129,10 +136,10 @@ class _ListTaskPageState extends State<ListTaskPage> {
                                       filterTaskModel.title ??
                                           taskModel.title ??
                                           '',
-                                      style: TextStyle(fontSize: 18),
+                                      style: const TextStyle(fontSize: 18),
                                     ),
                                     subtitle: Container(
-                                      margin: EdgeInsets.only(top: 10),
+                                      margin: const EdgeInsets.only(top: 10),
                                       child: Column(
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
@@ -141,12 +148,15 @@ class _ListTaskPageState extends State<ListTaskPage> {
                                             filterTaskModel.description ??
                                                 taskModel.description ??
                                                 '',
-                                            style: TextStyle(fontSize: 14),
+                                            style:
+                                                const TextStyle(fontSize: 14),
                                           ),
                                           Container(
-                                            margin: EdgeInsets.only(top: 10),
-                                            padding: EdgeInsets.only(top: 5),
-                                            decoration: BoxDecoration(
+                                            margin:
+                                                const EdgeInsets.only(top: 10),
+                                            padding:
+                                                const EdgeInsets.only(top: 5),
+                                            decoration: const BoxDecoration(
                                               border: Border(
                                                 top: BorderSide(
                                                   color: Colors.grey,
@@ -173,7 +183,7 @@ class _ListTaskPageState extends State<ListTaskPage> {
                                         ],
                                       ),
                                     ),
-                                    trailing: Icon(
+                                    trailing: const Icon(
                                       Icons.arrow_forward,
                                       color: Colors.deepPurple,
                                       size: 25,
@@ -183,76 +193,8 @@ class _ListTaskPageState extends State<ListTaskPage> {
                               ),
                             );
                           }));
-
-                      // return ListView.builder(
-                      //     itemCount: snapshot.data!.docs.length,
-                      //     itemBuilder: ((context, index) {
-                      //       TaskModel taskModel = TaskModel.fromMap(
-                      //           snapshot.data!.docs[index].data());
-                      //       return Container(
-                      //         margin: EdgeInsets.all(5),
-                      //         child: Card(
-                      //           elevation: 5,
-                      //           child: Padding(
-                      //             padding: const EdgeInsets.all(8.0),
-                      //             child: ListTile(
-                      //               onTap: () {
-                      //                 Navigator.of(context).pushNamed(
-                      //                     '/TaskDetail',
-                      //                     arguments: taskModel);
-                      //               },
-                      //               // leading: Icon(Icons.task),
-                      //               title: Text(
-                      //                 taskModel.title ?? '',
-                      //                 style: TextStyle(fontSize: 18),
-                      //               ),
-                      //               subtitle: Container(
-                      //                 margin: EdgeInsets.only(top: 10),
-                      //                 child: Column(
-                      //                   crossAxisAlignment:
-                      //                       CrossAxisAlignment.start,
-                      //                   children: [
-                      //                     Text(
-                      //                       taskModel.description ?? '',
-                      //                       style: TextStyle(fontSize: 14),
-                      //                     ),
-                      //                     Container(
-                      //                       margin: EdgeInsets.only(top: 10),
-                      //                       padding: EdgeInsets.only(top: 5),
-                      //                       decoration: BoxDecoration(
-                      //                         border: Border(
-                      //                           top: BorderSide(
-                      //                             color: Colors.grey,
-                      //                             width: 1.0,
-                      //                           ),
-                      //                         ),
-                      //                       ),
-                      //                       child: Row(
-                      //                         mainAxisAlignment:
-                      //                             MainAxisAlignment
-                      //                                 .spaceBetween,
-                      //                         children: [
-                      //                           Text('${taskModel.state}'),
-                      //                           Text(
-                      //                               '${getFormatedDate(taskModel.createdAt)}')
-                      //                         ],
-                      //                       ),
-                      //                     )
-                      //                   ],
-                      //                 ),
-                      //               ),
-                      //               trailing: Icon(
-                      //                 Icons.arrow_forward,
-                      //                 color: Colors.deepPurple,
-                      //                 size: 25,
-                      //               ),
-                      //             ),
-                      //           ),
-                      //         ),
-                      //       );
-                      //     }));
                     }
-                    return Center(
+                    return const Center(
                       child: CircularProgressIndicator(),
                     );
                   },
@@ -269,7 +211,7 @@ class _ListTaskPageState extends State<ListTaskPage> {
     );
   }
 
-  void filterStateFromFb(String query) async {
+  void filterStateFromFb(String? query) async {
     selectedStateValue = query;
     final result = await FirebaseFirestore.instance
         .collection('tasks')

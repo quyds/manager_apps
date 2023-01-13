@@ -23,17 +23,29 @@ class _MainPageState extends State<MainPage> {
 
   Theme BottomNavBar() {
     return Theme(
-      data: ThemeData(
-        canvasColor: Colors.grey.shade300,
-      ),
-      child: BottomNavigationBar(
-        items: [
-          BottomNavItem('Home', Icon(Icons.home)),
-          BottomNavItem('News', Icon(Icons.feed)),
-          BottomNavItem('Account', Icon(Icons.account_circle)),
-        ],
-        currentIndex: selectedItem,
-        onTap: _onTap,
+      data: ThemeData(),
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(10),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.8),
+              spreadRadius: 2,
+              blurRadius: 5,
+              offset: const Offset(0, 2), // changes position of shadow
+            ),
+          ],
+        ),
+        child: BottomNavigationBar(
+          items: [
+            BottomNavItem('Home', Icon(Icons.home)),
+            BottomNavItem('News', Icon(Icons.feed)),
+            BottomNavItem('Account', Icon(Icons.account_circle)),
+          ],
+          currentIndex: selectedItem,
+          onTap: _onTap,
+        ),
       ),
     );
   }

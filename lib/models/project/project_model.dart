@@ -8,6 +8,7 @@ class ProjectModel {
   late final DateTime? createdAt;
   late final DateTime? updatedAt;
   late final List? taskArray;
+  late final List? employeeArray;
 
   ProjectModel({
     this.id,
@@ -16,25 +17,27 @@ class ProjectModel {
     this.createdAt,
     this.updatedAt,
     this.taskArray,
+    this.employeeArray,
   });
 
   factory ProjectModel.fromMap(map) {
     return ProjectModel(
-        id: map['id'] ?? '',
-        title: map['title'] ?? '',
-        description: map['description'] ?? '',
-        createdAt: map['createdAt'] != null
-            ? (map['createdAt'] as Timestamp).toDate()
-            : null,
-        updatedAt: map['updatedAt'] != null
-            ? (map['updatedAt'] as Timestamp).toDate()
-            : null,
-        taskArray: map['taskArray'] ?? []
-        // == null
-        //     ? null
-        //     : List<TaskModel>.from(
-        //         map["taskArray"].map((x) => TaskModel.fromMap(x))),
-        );
+      id: map['id'] ?? '',
+      title: map['title'] ?? '',
+      description: map['description'] ?? '',
+      createdAt: map['createdAt'] != null
+          ? (map['createdAt'] as Timestamp).toDate()
+          : null,
+      updatedAt: map['updatedAt'] != null
+          ? (map['updatedAt'] as Timestamp).toDate()
+          : null,
+      taskArray: map['taskArray'] ?? [],
+      employeeArray: map['employeeArray'] ?? [],
+      // == null
+      //     ? null
+      //     : List<TaskModel>.from(
+      //         map["taskArray"].map((x) => TaskModel.fromMap(x))),
+    );
   }
 
   Map<String, dynamic> toMap() {
@@ -47,6 +50,9 @@ class ProjectModel {
       'taskArray': taskArray == null
           ? null
           : List<dynamic>.from(taskArray!.map((x) => x.toMap())),
+      'employeeArray': employeeArray == null
+          ? null
+          : List<dynamic>.from(employeeArray!.map((x) => x.toMap())),
     };
   }
 }

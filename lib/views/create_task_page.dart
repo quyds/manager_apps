@@ -214,21 +214,19 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Container(
-                            child: SizedBox(
-                              width: 80,
-                              child: Text(
-                                'Employee',
-                                overflow: TextOverflow.ellipsis,
-                                style: CustomTextStyle.labelOfTextStyle,
-                              ),
+                          const SizedBox(
+                            width: 80,
+                            child: Text(
+                              'Employee',
+                              overflow: TextOverflow.ellipsis,
+                              style: CustomTextStyle.labelOfTextStyle,
                             ),
                           ),
                           StreamBuilder<QuerySnapshot>(
                             stream: getDataCollection('users'),
                             builder: (context, snapshot) {
                               if (!snapshot.hasData) {
-                                return new CircularProgressIndicator();
+                                return const CircularProgressIndicator();
                               } else {
                                 List<DropdownMenuItem> currencyItems = [];
                                 for (int i = 0;
@@ -272,7 +270,6 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
                                             .showSnackBar(snackBar);
                                         setState(() {
                                           selectedEmployee = currencyValue;
-                                          print(selectedEmployee);
                                         });
                                       },
                                     )
@@ -433,7 +430,8 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
         .collection('projects')
         .doc(selectedProject)
         .update({
-      'taskArray': FieldValue.arrayUnion([widget.dataTask?.id])
+      'taskArray': FieldValue.arrayUnion([widget.dataTask?.id]),
+      'employeeArray': FieldValue.arrayUnion([selectedEmployee])
     });
 
     Navigator.pop(context, widget.dataTask?.state);
@@ -463,7 +461,8 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
         .collection('projects')
         .doc(selectedProject)
         .update({
-      'taskArray': FieldValue.arrayUnion([idTask])
+      'taskArray': FieldValue.arrayUnion([idTask]),
+      'employeeArray': FieldValue.arrayUnion([selectedEmployee])
     });
 
     const snackBar = SnackBar(
@@ -472,11 +471,7 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
 
     if (widget.projectId == null) {
-      Navigator.of(context).pushReplacementNamed('/ListTask');
-      // Navigator.pushAndRemoveUntil(
-      //     context,
-      //     MaterialPageRoute(builder: (BuildContext context) => ListTaskPage()),
-      //     (route) => route is HomePage);
+      Navigator.of(context).pushNamed('/ListTask');
     } else {
       Navigator.of(context).pop();
     }
