@@ -20,7 +20,7 @@ class _ListProjectPageState extends State<ListProjectPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text('List Project'),
+          title: const Text('Danh sách dự án'),
         ),
         body: Column(
           children: [
@@ -40,7 +40,7 @@ class _ListProjectPageState extends State<ListProjectPage> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: const [
-                    Text('Sap xep'),
+                    Text('Sắp xếp'),
                   ],
                 ),
               ),
@@ -86,7 +86,9 @@ class _ListProjectPageState extends State<ListProjectPage> {
                                     TextButton(
                                       style: TextButton.styleFrom(
                                           backgroundColor: Colors.grey,
-                                          padding: const EdgeInsets.all(0)),
+                                          padding: EdgeInsets.only(
+                                              left: Dimension.padding.tiny,
+                                              right: Dimension.padding.tiny)),
                                       onPressed: () {
                                         Navigator.of(context)
                                             .pushNamed(
@@ -98,9 +100,11 @@ class _ListProjectPageState extends State<ListProjectPage> {
                                               (value) => setState(() {}),
                                             );
                                       },
-                                      child: const Text(
+                                      child: Text(
                                         'Thêm công việc',
-                                        style: TextStyle(fontSize: 12),
+                                        style: TextStyle(
+                                            fontSize: Dimension.padding.medium,
+                                            color: Colors.white),
                                       ),
                                     ),
                                     Column(
@@ -117,7 +121,9 @@ class _ListProjectPageState extends State<ListProjectPage> {
                                             if (snapshot.hasData) {
                                               return ListTile(
                                                 title: Text(
-                                                    snapshot.data?.title ?? ''),
+                                                  snapshot.data?.title ?? '',
+                                                  maxLines: 1,
+                                                ),
                                                 subtitle: Text(
                                                     snapshot.data?.state ?? ''),
                                               );

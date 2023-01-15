@@ -23,13 +23,15 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    var screenSize = MediaQuery.of(context).size;
     User? currentUser = _auth.currentUser;
+    print('screen size ${screenSize.width / 3}');
 
     return Scaffold(
       appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(150),
+        preferredSize: Size.fromHeight(screenSize.width / 3),
         child: AppBar(
-          toolbarHeight: 150,
+          toolbarHeight: screenSize.width / 3,
           title: Container(
             margin: EdgeInsets.only(left: Dimension.padding.small),
             child: Column(
@@ -249,11 +251,18 @@ class _HomePageState extends State<HomePage> {
               ProjectModel? projectModel =
                   ProjectModel.fromMap(snapshot.data!.docs[index].data());
               List? listUsers = [];
-              if (projectModel.taskArray!.isNotEmpty) {
-                for (int i = 0; i < 3; i++) {
-                  listUsers.add(projectModel.employeeArray![i]);
+              if (projectModel.employeeArray!.isNotEmpty) {
+                if (projectModel.employeeArray!.length >= 3) {
+                  for (int i = 0; i < 3; i++) {
+                    listUsers.add(projectModel.employeeArray![i]);
+                  }
+                } else {
+                  for (int i = 0; i < projectModel.employeeArray!.length; i++) {
+                    listUsers.add(projectModel.employeeArray![i]);
+                  }
                 }
               }
+
               return SingleChildScrollView(
                 child: InkWell(
                   onTap: () {
@@ -292,48 +301,75 @@ class _HomePageState extends State<HomePage> {
                           style: const TextStyle(
                               fontSize: 16, color: Colors.white),
                         ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: listUsers.isNotEmpty
-                              ? listUsers.map((e) {
-                                  return FutureBuilder(
-                                    future: getUserById(e),
-                                    builder: (context, snapshot) {
-                                      if (snapshot.hasError) {
-                                        return Text(snapshot.error.toString());
-                                      }
-                                      if (snapshot.hasData) {
-                                        String? image =
-                                            snapshot.data?.profileImage;
-                                        return Container(
-                                          width: 25,
-                                          height: 25,
-                                          margin: EdgeInsets.only(
-                                              left: Dimension.padding.tiny,
-                                              right: Dimension.padding.tiny),
-                                          decoration: BoxDecoration(
-                                            shape: BoxShape.circle,
-                                            image: image == null
-                                                ? const DecorationImage(
-                                                    image: AssetImage(
-                                                        'assets/images/avatar.png'),
-                                                    fit: BoxFit.cover)
-                                                : DecorationImage(
-                                                    image: NetworkImage(image),
-                                                    fit: BoxFit.cover,
-                                                  ),
-                                          ),
-                                        );
-                                      } else {
-                                        return const Center(
-                                          child: CircularProgressIndicator(),
-                                        );
-                                      }
-                                    },
-                                  );
-                                }).toList()
-                              : [],
-                        ),
+                        listUsers.isNotEmpty
+                            ? Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: listUsers.map((e) {
+                                      return FutureBuilder(
+                                        future: getUserById(e),
+                                        builder: (context, snapshot) {
+                                          if (snapshot.hasError) {
+                                            return Text(
+                                                snapshot.error.toString());
+                                          }
+                                          if (snapshot.hasData) {
+                                            String? image =
+                                                snapshot.data?.profileImage;
+                                            return Container(
+                                              width: 25,
+                                              height: 25,
+                                              margin: EdgeInsets.only(
+                                                  left: Dimension.padding.tiny,
+                                                  right:
+                                                      Dimension.padding.tiny),
+                                              decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                image: image == null
+                                                    ? const DecorationImage(
+                                                        image: AssetImage(
+                                                            'assets/images/avatar.png'),
+                                                        fit: BoxFit.cover)
+                                                    : DecorationImage(
+                                                        image:
+                                                            NetworkImage(image),
+                                                        fit: BoxFit.cover,
+                                                      ),
+                                              ),
+                                            );
+                                          } else {
+                                            return const Center(
+                                              child:
+                                                  CircularProgressIndicator(),
+                                            );
+                                          }
+                                        },
+                                      );
+                                    }).toList(),
+                                  ),
+                                  projectModel.employeeArray!.length > 3
+                                      ? Row(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                          children: [
+                                            Container(
+                                              child: Text(
+                                                '+${projectModel.employeeArray!.length - 3} ',
+                                                style: TextStyle(
+                                                    fontSize: 16,
+                                                    color: Colors.white),
+                                              ),
+                                            )
+                                          ],
+                                        )
+                                      : Row(),
+                                ],
+                              )
+                            : Row(),
                       ],
                     ),
                   ),

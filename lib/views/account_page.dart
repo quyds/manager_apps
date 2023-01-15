@@ -1,7 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 
 class AccountPage extends StatelessWidget {
   const AccountPage({super.key});
@@ -9,11 +7,11 @@ class AccountPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Account page')),
+      appBar: AppBar(title: const Text('Tài khoản')),
       body: Column(
         children: [
           ListTile(
-            title: Text('Log out'),
+            title: const Text('Đăng xuất'),
             onTap: () {
               FirebaseAuth.instance
                   .signOut()

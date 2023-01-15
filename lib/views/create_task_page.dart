@@ -1,15 +1,9 @@
-import 'dart:developer';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:manager_apps/const/app_constants.dart';
 import 'package:manager_apps/core/extensions/custom_style.dart';
 import 'package:manager_apps/core/repositories/get_data_collection_doc.dart';
-import 'package:manager_apps/models/user/user_model.dart';
-import 'package:manager_apps/views/home_page.dart';
-import 'package:manager_apps/views/list_task_page.dart';
 
 import '../core/repositories/list_state.dart';
 import '../models/task/task_model.dart';
@@ -26,6 +20,7 @@ class CreateTaskPage extends StatefulWidget {
 class _CreateTaskPageState extends State<CreateTaskPage> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   var selectedEmployee, selectedState, selectedProject;
+  late bool validation = false;
 
   late TextEditingController titleController;
   late TextEditingController desController;
@@ -66,6 +61,16 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
   }
 
   @override
+  void dispose() {
+    titleController.dispose();
+    desController.dispose();
+    estimateTimeController.dispose();
+    completeTimeController.dispose();
+
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     print(widget.dataTask?.project);
     return Scaffold(
@@ -82,11 +87,11 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
                 children: [
                   widget.dataTask == null
                       ? Text(
-                          'New Task',
+                          'Tạo công việc mới',
                           style: CustomTextStyle.topTitleOfTextStyle,
                         )
                       : Text(
-                          'Edit Task',
+                          'Chỉnh sửa công việc',
                           style: CustomTextStyle.topTitleOfTextStyle,
                         )
                 ],
@@ -102,7 +107,8 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
                       borderRadius:
                           BorderRadius.circular(Dimension.radius.medium),
                     ),
-                    labelText: 'Title',
+                    labelText: 'Tiêu đề',
+                    errorText: validation ? 'Tiêu đề không được trống' : null,
                     labelStyle: CustomTextStyle.labelOfTextStyle,
                   ),
                   minLines: 1,
@@ -116,15 +122,16 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
                     Expanded(
                       child: TextField(
                         controller: estimateTimeController,
+                        keyboardType: TextInputType.number,
                         decoration: InputDecoration(
-                          enabledBorder: UnderlineInputBorder(
+                          enabledBorder: const UnderlineInputBorder(
                               borderSide: BorderSide(
                             color: Colors.grey,
                           )),
                           contentPadding: EdgeInsets.only(
                               top: Dimension.padding.huge,
                               bottom: Dimension.padding.huge),
-                          labelText: 'Estimate Time',
+                          labelText: 'Thời gian dự kiến',
                           labelStyle: CustomTextStyle.labelOfTextStyle,
                         ),
                         onChanged: (text) {},
@@ -134,8 +141,9 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
                     Expanded(
                       child: TextField(
                         controller: completeTimeController,
+                        keyboardType: TextInputType.number,
                         decoration: InputDecoration(
-                          enabledBorder: UnderlineInputBorder(
+                          enabledBorder: const UnderlineInputBorder(
                             borderSide: BorderSide(
                               color: Colors.grey,
                             ),
@@ -143,7 +151,7 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
                           contentPadding: EdgeInsets.only(
                               top: Dimension.padding.huge,
                               bottom: Dimension.padding.huge),
-                          labelText: 'Complete Time',
+                          labelText: 'Thời gian hoàn thành',
                           labelStyle: CustomTextStyle.labelOfTextStyle,
                         ),
                         onChanged: (text) {},
@@ -159,7 +167,7 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
                         borderSide: BorderSide(
                       color: Colors.grey,
                     )),
-                    labelText: 'Description',
+                    labelText: 'Nội dung',
                     labelStyle: CustomTextStyle.labelOfTextStyle,
                   ),
                   minLines: 2,
@@ -174,50 +182,45 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Container(
-                            child: SizedBox(
-                              width: 80,
-                              child: Text(
-                                'State',
-                                overflow: TextOverflow.ellipsis,
-                                style: CustomTextStyle.labelOfTextStyle,
-                              ),
+                          const SizedBox(
+                            child: Text(
+                              'Trạng thái',
+                              overflow: TextOverflow.ellipsis,
+                              style: CustomTextStyle.labelOfTextStyle,
                             ),
                           ),
-                          Container(
-                            // width: 220,
-                            child: DropdownButton<String>(
-                              hint: Text('Chọn trạng thái'),
-                              value: selectedState,
-                              elevation: 16,
-                              style: CustomTextStyle.subOfTextStyle,
-                              underline: Container(
-                                height: 1,
-                                color: Colors.grey,
-                              ),
-                              onChanged: (value) {
-                                setState(() {
-                                  selectedState = value!;
-                                });
-                              },
-                              items: list.map<DropdownMenuItem<String>>(
-                                  (String value) {
-                                return DropdownMenuItem<String>(
-                                  value: value,
-                                  child: Text(value),
-                                );
-                              }).toList(),
+                          DropdownButton<String>(
+                            hint: const Text('Chọn trạng thái'),
+                            value: selectedState,
+                            elevation: 16,
+                            style: CustomTextStyle.subOfTextStyle,
+                            underline: Container(
+                              height: 1,
+                              color: Colors.grey,
                             ),
+                            onChanged: (value) {
+                              setState(() {
+                                selectedState = value!;
+                              });
+                            },
+                            items: list
+                                .map<DropdownMenuItem<String>>((String value) {
+                              return DropdownMenuItem<String>(
+                                value: value,
+                                child: Text(value),
+                              );
+                            }).toList(),
                           )
                         ],
                       ),
+                      kSpacingWidth12,
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           const SizedBox(
                             width: 80,
                             child: Text(
-                              'Employee',
+                              'Nhân viên',
                               overflow: TextOverflow.ellipsis,
                               style: CustomTextStyle.labelOfTextStyle,
                             ),
@@ -280,12 +283,13 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
                           ),
                         ],
                       ),
+                      kSpacingWidth12,
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Container(
                             child: Text(
-                              'Project',
+                              'Dự án',
                               style: CustomTextStyle.labelOfTextStyle,
                             ),
                           ),
@@ -371,7 +375,7 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
                               ),
                             ),
                           ),
-                          child: Text('Back'),
+                          child: const Text('Trở lại'),
                           onPressed: () {
                             Navigator.of(context).pop();
                           },
@@ -388,10 +392,10 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
                             ),
                           ),
                           child: widget.dataTask == null
-                              ? Text('Create Task')
-                              : Text('Edit Task'),
+                              ? const Text('Tạo mới')
+                              : const Text('Chỉnh sửa'),
                           onPressed: () {
-                            print('111 ${widget.dataTask}');
+                            setState(() {});
                             widget.dataTask == null
                                 ? postTaskDetailsToFirestore()
                                 : updateTaskDetail(context);

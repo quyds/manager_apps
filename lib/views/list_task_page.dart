@@ -35,7 +35,7 @@ class _ListTaskPageState extends State<ListTaskPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('List Task'),
+        title: const Text('Danh sách công việc'),
       ),
       body: Column(
         children: [
@@ -57,7 +57,7 @@ class _ListTaskPageState extends State<ListTaskPage> {
                 children: [
                   const Text('Trạng thái'),
                   SizedBox(
-                    height: 20,
+                    height: 30,
                     child: DropdownButton<String>(
                       value: selectedStateValue,
                       elevation: 16,
@@ -90,7 +90,6 @@ class _ListTaskPageState extends State<ListTaskPage> {
                       return Text(snapshot.error.toString());
                     }
                     if (snapshot.hasData) {
-                      // if (snapshot.data!.docs.length == 0)
                       if (filterState.isEmpty) {
                         return Row(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -131,12 +130,14 @@ class _ListTaskPageState extends State<ListTaskPage> {
                                             }),
                                           );
                                     },
-                                    // leading: Icon(Icons.task),
                                     title: Text(
                                       filterTaskModel.title ??
                                           taskModel.title ??
                                           '',
-                                      style: const TextStyle(fontSize: 18),
+                                      style: const TextStyle(
+                                        fontSize: 18,
+                                      ),
+                                      maxLines: 1,
                                     ),
                                     subtitle: Container(
                                       margin: const EdgeInsets.only(top: 10),
@@ -150,6 +151,7 @@ class _ListTaskPageState extends State<ListTaskPage> {
                                                 '',
                                             style:
                                                 const TextStyle(fontSize: 14),
+                                            maxLines: 4,
                                           ),
                                           Container(
                                             margin:
