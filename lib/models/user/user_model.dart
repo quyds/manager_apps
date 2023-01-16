@@ -19,7 +19,7 @@ class UserModel {
     this.timeStamp,
   });
 
-  factory UserModel.fromMap(Map map) {
+  factory UserModel.fromMap(map) {
     return UserModel(
         uid: map['uid'],
         email: map['email'],

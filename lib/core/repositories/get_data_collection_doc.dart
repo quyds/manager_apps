@@ -12,12 +12,3 @@ Stream<QuerySnapshot<Map<String, dynamic>>> getDataCollection(String index) {
   var collection = FirebaseFirestore.instance.collection(index).snapshots();
   return collection;
 }
-
-Stream<List<ProjectModel>> getAllProjects() {
-  var data = FirebaseFirestore.instance.collection("projects").snapshots().map(
-      (snapshots) => snapshots.docs
-          .map((doc) => ProjectModel.fromMap(doc.data()))
-          .toList());
-
-  return data;
-}

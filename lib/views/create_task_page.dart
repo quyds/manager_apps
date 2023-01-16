@@ -27,6 +27,8 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
   late TextEditingController estimateTimeController;
   late TextEditingController completeTimeController;
 
+  final formGlobalKey = GlobalKey<FormState>();
+
   @override
   void initState() {
     if (widget.dataTask == null) {
@@ -61,308 +63,334 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
   }
 
   @override
-  void dispose() {
-    titleController.dispose();
-    desController.dispose();
-    estimateTimeController.dispose();
-    completeTimeController.dispose();
-
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    print(widget.dataTask?.project);
     return Scaffold(
         body: SingleChildScrollView(
       child: Container(
-        margin: EdgeInsets.only(left: 10, right: 10),
+        margin: EdgeInsets.only(
+            left: Dimension.padding.medium, right: Dimension.padding.medium),
         child: Column(
           children: [
-            Container(
+            SizedBox(
               height: 100,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   widget.dataTask == null
-                      ? Text(
+                      ? const Text(
                           'Tạo công việc mới',
                           style: CustomTextStyle.topTitleOfTextStyle,
                         )
-                      : Text(
+                      : const Text(
                           'Chỉnh sửa công việc',
                           style: CustomTextStyle.topTitleOfTextStyle,
                         )
                 ],
               ),
             ),
-            Column(
-              children: [
-                TextField(
-                  controller: titleController,
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.grey),
-                      borderRadius:
-                          BorderRadius.circular(Dimension.radius.medium),
-                    ),
-                    labelText: 'Tiêu đề',
-                    errorText: validation ? 'Tiêu đề không được trống' : null,
-                    labelStyle: CustomTextStyle.labelOfTextStyle,
-                  ),
-                  minLines: 1,
-                  maxLines: 2,
-                  onChanged: (text) {},
-                ),
-                kSpacingHeight10,
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Expanded(
-                      child: TextField(
-                        controller: estimateTimeController,
-                        keyboardType: TextInputType.number,
-                        decoration: InputDecoration(
-                          enabledBorder: const UnderlineInputBorder(
-                              borderSide: BorderSide(
-                            color: Colors.grey,
-                          )),
-                          contentPadding: EdgeInsets.only(
-                              top: Dimension.padding.huge,
-                              bottom: Dimension.padding.huge),
-                          labelText: 'Thời gian dự kiến',
-                          labelStyle: CustomTextStyle.labelOfTextStyle,
-                        ),
-                        onChanged: (text) {},
+            Form(
+              key: formGlobalKey,
+              child: Column(
+                children: [
+                  TextFormField(
+                    controller: titleController,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(
+                        borderSide: const BorderSide(color: Colors.grey),
+                        borderRadius:
+                            BorderRadius.circular(Dimension.radius.medium),
                       ),
+                      labelText: 'Tiêu đề',
+                      labelStyle: CustomTextStyle.labelOfTextStyle,
                     ),
-                    kSpacingWidth24,
-                    Expanded(
-                      child: TextField(
-                        controller: completeTimeController,
-                        keyboardType: TextInputType.number,
-                        decoration: InputDecoration(
-                          enabledBorder: const UnderlineInputBorder(
-                            borderSide: BorderSide(
-                              color: Colors.grey,
-                            ),
-                          ),
-                          contentPadding: EdgeInsets.only(
-                              top: Dimension.padding.huge,
-                              bottom: Dimension.padding.huge),
-                          labelText: 'Thời gian hoàn thành',
-                          labelStyle: CustomTextStyle.labelOfTextStyle,
-                        ),
-                        onChanged: (text) {},
-                      ),
-                    ),
-                  ],
-                ),
-                kSpacingHeight10,
-                TextField(
-                  controller: desController,
-                  decoration: InputDecoration(
-                    enabledBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(
-                      color: Colors.grey,
-                    )),
-                    labelText: 'Nội dung',
-                    labelStyle: CustomTextStyle.labelOfTextStyle,
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return 'Vui lòng nhập Tiêu đề!';
+                      }
+                      return null;
+                    },
+                    minLines: 1,
+                    maxLines: 2,
+                    onChanged: (text) {},
                   ),
-                  minLines: 2,
-                  maxLines: 5,
-                  onChanged: (text) {},
-                ),
-                kSpacingHeight18,
-                Container(
-                  child: Row(
+                  kSpacingHeight10,
+                  Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const SizedBox(
-                            child: Text(
-                              'Trạng thái',
-                              overflow: TextOverflow.ellipsis,
-                              style: CustomTextStyle.labelOfTextStyle,
-                            ),
-                          ),
-                          DropdownButton<String>(
-                            hint: const Text('Chọn trạng thái'),
-                            value: selectedState,
-                            elevation: 16,
-                            style: CustomTextStyle.subOfTextStyle,
-                            underline: Container(
-                              height: 1,
+                      Expanded(
+                        child: TextFormField(
+                          controller: estimateTimeController,
+                          keyboardType: TextInputType.number,
+                          decoration: InputDecoration(
+                            enabledBorder: const UnderlineInputBorder(
+                                borderSide: BorderSide(
                               color: Colors.grey,
-                            ),
-                            onChanged: (value) {
-                              setState(() {
-                                selectedState = value!;
-                              });
-                            },
-                            items: list
-                                .map<DropdownMenuItem<String>>((String value) {
-                              return DropdownMenuItem<String>(
-                                value: value,
-                                child: Text(value),
-                              );
-                            }).toList(),
-                          )
-                        ],
+                            )),
+                            contentPadding: EdgeInsets.only(
+                                top: Dimension.padding.huge,
+                                bottom: Dimension.padding.huge),
+                            labelText: 'Thời gian dự kiến',
+                            labelStyle: CustomTextStyle.labelOfTextStyle,
+                          ),
+                          validator: (value) {
+                            if (value!.isEmpty) {
+                              return 'Vui lòng nhập Thời gian!';
+                            }
+                            return null;
+                          },
+                          onChanged: (text) {},
+                        ),
                       ),
-                      kSpacingWidth12,
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const SizedBox(
-                            width: 80,
-                            child: Text(
-                              'Nhân viên',
-                              overflow: TextOverflow.ellipsis,
-                              style: CustomTextStyle.labelOfTextStyle,
+                      kSpacingWidth24,
+                      Expanded(
+                        child: TextFormField(
+                          controller: completeTimeController,
+                          keyboardType: TextInputType.number,
+                          decoration: InputDecoration(
+                            enabledBorder: const UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Colors.grey,
+                              ),
                             ),
+                            contentPadding: EdgeInsets.only(
+                                top: Dimension.padding.huge,
+                                bottom: Dimension.padding.huge),
+                            labelText: 'Thời gian hoàn thành',
+                            labelStyle: CustomTextStyle.labelOfTextStyle,
                           ),
-                          StreamBuilder<QuerySnapshot>(
-                            stream: getDataCollection('users'),
-                            builder: (context, snapshot) {
-                              if (!snapshot.hasData) {
-                                return const CircularProgressIndicator();
-                              } else {
-                                List<DropdownMenuItem> currencyItems = [];
-                                for (int i = 0;
-                                    i < snapshot.data!.docs.length;
-                                    i++) {
-                                  DocumentSnapshot snap =
-                                      snapshot.data!.docs[i];
-                                  currencyItems.add(
-                                    DropdownMenuItem(
-                                      child: Text(
-                                        snap['name'],
-                                        style: CustomTextStyle.subOfTextStyle,
-                                      ),
-                                      value: "${snap.id}",
-                                    ),
-                                  );
-                                }
-                                return Row(
-                                  children: [
-                                    DropdownButton(
-                                      hint: Text('Chọn nhân viên'),
-                                      elevation: 16,
-                                      style: CustomTextStyle.subOfTextStyle,
-                                      underline: Container(
-                                        height: 1,
-                                        color: Colors.grey,
-                                      ),
-                                      value: selectedEmployee,
-                                      isExpanded: false,
-                                      items: currencyItems,
-                                      onChanged: (currencyValue) {
-                                        const snackBar = SnackBar(
-                                          content: Text(
-                                            'Da chon !',
-                                            style: TextStyle(
-                                              color: Color(0xff11b719),
-                                            ),
-                                          ),
-                                        );
-                                        ScaffoldMessenger.of(context)
-                                            .showSnackBar(snackBar);
-                                        setState(() {
-                                          selectedEmployee = currencyValue;
-                                        });
-                                      },
-                                    )
-                                  ],
-                                );
-                              }
-                            },
-                          ),
-                        ],
-                      ),
-                      kSpacingWidth12,
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Container(
-                            child: Text(
-                              'Dự án',
-                              style: CustomTextStyle.labelOfTextStyle,
-                            ),
-                          ),
-                          StreamBuilder<QuerySnapshot>(
-                            stream: getDataCollection('projects'),
-                            builder: (context, snapshot) {
-                              if (!snapshot.hasData) {
-                                return new CircularProgressIndicator();
-                              } else {
-                                List<DropdownMenuItem> currencyItems = [];
-                                for (int i = 0;
-                                    i < snapshot.data!.docs.length;
-                                    i++) {
-                                  DocumentSnapshot snap =
-                                      snapshot.data!.docs[i];
-                                  currencyItems.add(
-                                    DropdownMenuItem(
-                                      value: "${snap.id}",
-                                      child: SizedBox(
-                                        width: 80,
-                                        child: Text(
-                                          snap['title'],
-                                          overflow: TextOverflow.ellipsis,
-                                          style: CustomTextStyle.subOfTextStyle,
-                                        ),
-                                      ),
-                                    ),
-                                  );
-                                }
-                                return Row(
-                                  children: [
-                                    DropdownButton(
-                                      hint: Text('Chọn dự án'),
-                                      elevation: 16,
-                                      style: CustomTextStyle.subOfTextStyle,
-                                      underline: Container(
-                                        height: 1,
-                                        color: Colors.grey,
-                                      ),
-                                      value: selectedProject,
-                                      isExpanded: false,
-                                      items: currencyItems,
-                                      onChanged: (currencyValue) {
-                                        const snackBar = SnackBar(
-                                          content: Text(
-                                            'Da chon !',
-                                            style: TextStyle(
-                                              color: Color(0xff11b719),
-                                            ),
-                                          ),
-                                        );
-                                        ScaffoldMessenger.of(context)
-                                            .showSnackBar(snackBar);
-                                        setState(() {
-                                          selectedProject = currencyValue;
-                                          print(
-                                              'selectedProject ${selectedProject}');
-                                        });
-                                      },
-                                    )
-                                  ],
-                                );
-                              }
-                            },
-                          ),
-                        ],
+                          validator: (value) {
+                            if (value!.isEmpty) {
+                              return 'Vui lòng nhập Thời gian!';
+                            }
+                            return null;
+                          },
+                          onChanged: (text) {},
+                        ),
                       ),
                     ],
                   ),
-                ),
-                Container(
-                  margin: EdgeInsets.only(top: 10),
-                  child: Row(
+                  kSpacingHeight10,
+                  TextFormField(
+                    controller: desController,
+                    decoration: const InputDecoration(
+                      enabledBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(
+                        color: Colors.grey,
+                      )),
+                      labelText: 'Nội dung',
+                      labelStyle: CustomTextStyle.labelOfTextStyle,
+                    ),
+                    minLines: 2,
+                    maxLines: 5,
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return 'Vui lòng nhập Nội dung!';
+                      }
+                      return null;
+                    },
+                    onChanged: (text) {},
+                  ),
+                  kSpacingHeight18,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Flexible(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text(
+                              'Trạng thái',
+                              style: CustomTextStyle.labelOfTextStyle,
+                            ),
+                            DropdownButtonFormField<String>(
+                              hint: const Text(
+                                'Chọn trạng thái',
+                                style: TextStyle(fontSize: 12),
+                              ),
+                              value: selectedState,
+                              elevation: 16,
+                              style: CustomTextStyle.subOfTextStyle,
+                              decoration: const InputDecoration(
+                                  border: UnderlineInputBorder(
+                                      borderSide:
+                                          BorderSide(color: Colors.black))),
+                              validator: (value) {
+                                if (widget.dataTask == null) {
+                                  if (value != 'To Do') {
+                                    return 'Lỗi trạng thái';
+                                  }
+                                }
+                                return null;
+                              },
+                              onChanged: (value) {
+                                setState(() {
+                                  selectedState = value!;
+                                });
+                              },
+                              items: list.map<DropdownMenuItem<String>>(
+                                  (String value) {
+                                return DropdownMenuItem<String>(
+                                  value: value,
+                                  child: Text(value),
+                                );
+                              }).toList(),
+                            )
+                          ],
+                        ),
+                      ),
+                      kSpacingWidth12,
+                      Flexible(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text(
+                              'Nhân viên',
+                              style: CustomTextStyle.labelOfTextStyle,
+                            ),
+                            StreamBuilder<QuerySnapshot>(
+                              stream: getDataCollection('users'),
+                              builder: (context, snapshot) {
+                                if (!snapshot.hasData) {
+                                  return const CircularProgressIndicator();
+                                } else {
+                                  List<DropdownMenuItem> currencyItems = [];
+                                  for (int i = 0;
+                                      i < snapshot.data!.docs.length;
+                                      i++) {
+                                    DocumentSnapshot snap =
+                                        snapshot.data!.docs[i];
+                                    currencyItems.add(
+                                      DropdownMenuItem(
+                                        value: snap.id,
+                                        child: SizedBox(
+                                          width: 80,
+                                          child: Text(
+                                            snap['name'],
+                                            overflow: TextOverflow.ellipsis,
+                                            style:
+                                                CustomTextStyle.subOfTextStyle,
+                                          ),
+                                        ),
+                                      ),
+                                    );
+                                  }
+                                  return DropdownButtonFormField(
+                                    hint: const Text(
+                                      'Chọn nhân viên',
+                                      style: TextStyle(fontSize: 12),
+                                    ),
+                                    elevation: 16,
+                                    style: CustomTextStyle.subOfTextStyle,
+                                    decoration: const InputDecoration(
+                                        border: UnderlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color: Colors.black))),
+                                    value: selectedEmployee,
+                                    isExpanded: false,
+                                    items: currencyItems,
+                                    onChanged: (currencyValue) {
+                                      const snackBar = SnackBar(
+                                        content: Text(
+                                          'Da chon !',
+                                          style: TextStyle(
+                                            color: Color(0xff11b719),
+                                          ),
+                                        ),
+                                      );
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(snackBar);
+                                      setState(() {
+                                        selectedEmployee = currencyValue;
+                                      });
+                                    },
+                                  );
+                                }
+                              },
+                            ),
+                          ],
+                        ),
+                      ),
+                      kSpacingWidth12,
+                      Flexible(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Container(
+                              child: Text(
+                                'Dự án',
+                                style: CustomTextStyle.labelOfTextStyle,
+                              ),
+                            ),
+                            StreamBuilder<QuerySnapshot>(
+                              stream: getDataCollection('projects'),
+                              builder: (context, snapshot) {
+                                if (!snapshot.hasData) {
+                                  return new CircularProgressIndicator();
+                                } else {
+                                  List<DropdownMenuItem> currencyItems = [];
+                                  for (int i = 0;
+                                      i < snapshot.data!.docs.length;
+                                      i++) {
+                                    DocumentSnapshot snap =
+                                        snapshot.data!.docs[i];
+                                    currencyItems.add(
+                                      DropdownMenuItem(
+                                        value: "${snap.id}",
+                                        child: SizedBox(
+                                          width: 80,
+                                          child: Text(
+                                            snap['title'],
+                                            overflow: TextOverflow.ellipsis,
+                                            style:
+                                                CustomTextStyle.subOfTextStyle,
+                                          ),
+                                        ),
+                                      ),
+                                    );
+                                  }
+                                  return DropdownButtonFormField(
+                                    hint: const Text(
+                                      'Chọn dự án',
+                                      style: TextStyle(fontSize: 12),
+                                    ),
+                                    elevation: 16,
+                                    style: CustomTextStyle.subOfTextStyle,
+                                    decoration: const InputDecoration(
+                                        border: UnderlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color: Colors.black))),
+                                    value: selectedProject,
+                                    isExpanded: false,
+                                    items: currencyItems,
+                                    onChanged: (currencyValue) {
+                                      const snackBar = SnackBar(
+                                        content: Text(
+                                          'Da chon !',
+                                          style: TextStyle(
+                                            color: Color(0xff11b719),
+                                          ),
+                                        ),
+                                      );
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(snackBar);
+                                      setState(() {
+                                        selectedProject = currencyValue;
+                                        print(
+                                            'selectedProject ${selectedProject}');
+                                      });
+                                    },
+                                  );
+                                }
+                              },
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  kSpacingHeight12,
+                  Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Padding(
@@ -395,17 +423,19 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
                               ? const Text('Tạo mới')
                               : const Text('Chỉnh sửa'),
                           onPressed: () {
-                            setState(() {});
-                            widget.dataTask == null
-                                ? postTaskDetailsToFirestore()
-                                : updateTaskDetail(context);
+                            if (formGlobalKey.currentState!.validate()) {
+                              formGlobalKey.currentState!.save();
+                              widget.dataTask == null
+                                  ? postTaskDetailsToFirestore()
+                                  : updateTaskDetail(context);
+                            }
                           },
                         ),
                       )
                     ],
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ],
         ),

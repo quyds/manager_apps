@@ -35,6 +35,12 @@ class _ListTaskPageState extends State<ListTaskPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.of(context).pushNamed('/Main');
+          },
+        ),
         title: const Text('Danh sách công việc'),
       ),
       body: Column(
@@ -57,9 +63,10 @@ class _ListTaskPageState extends State<ListTaskPage> {
                 children: [
                   const Text('Trạng thái'),
                   SizedBox(
-                    height: 30,
+                    height: 20,
                     child: DropdownButton<String>(
                       value: selectedStateValue,
+                      underline: null,
                       elevation: 16,
                       style: CustomTextStyle.subOfTextStyle,
                       onChanged: (value) {

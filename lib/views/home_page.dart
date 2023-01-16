@@ -23,122 +23,124 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    var screenSize = MediaQuery.of(context).size;
+    var screenSizeWidth = MediaQuery.of(context).size.width;
+
     User? currentUser = _auth.currentUser;
-    print('screen size ${screenSize.width / 3}');
 
     return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: Size.fromHeight(screenSize.width / 3),
-        child: AppBar(
-          toolbarHeight: screenSize.width / 3,
-          title: Container(
-            margin: EdgeInsets.only(left: Dimension.padding.small),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
-                    stream: getDataDoc(currentUser!.uid, "users"),
-                    builder: (context, snapshot) {
-                      if (!snapshot.hasData) {
-                        return const Center(
-                          child: CircularProgressIndicator(),
-                        );
-                      }
-                      var document = snapshot.data;
-                      return Text(
-                        document!["name"] ?? 'Your Name',
-                        style: const TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black),
+      appBar: AppBar(
+        toolbarHeight:
+            screenSizeWidth < 600 ? screenSizeWidth / 3 : screenSizeWidth / 5,
+        title: Container(
+          margin: EdgeInsets.only(left: Dimension.padding.small),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+                  stream: getDataDoc(currentUser!.uid, "users"),
+                  builder: (context, snapshot) {
+                    if (!snapshot.hasData) {
+                      return const Center(
+                        child: CircularProgressIndicator(),
                       );
-                    }),
-                const SizedBox(
-                  height: 5,
-                ),
-                StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
-                    stream: getDataDoc(currentUser.uid, "users"),
-                    builder: (context, snapshot) {
-                      if (!snapshot.hasData) {
-                        return const Center(
-                          child: CircularProgressIndicator(),
-                        );
-                      }
-                      var document = snapshot.data;
-                      return Text(
-                        document!["level"] ?? 'Your Level',
-                        style:
-                            const TextStyle(fontSize: 14, color: Colors.black),
-                      );
-                    }),
-              ],
-            ),
-          ),
-          leadingWidth: 90,
-          leading: InkWell(
-            onTap: () {
-              Navigator.of(context).pushNamed('/EditProfile');
-            },
-            child: StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
-                stream: getDataDoc(currentUser.uid, "users"),
-                builder: (context, snapshot) {
-                  if (!snapshot.hasData) {
-                    return const Center(
-                      child: CircularProgressIndicator(),
+                    }
+                    var document = snapshot.data;
+                    return Text(
+                      document!["name"] ?? 'Your Name',
+                      style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black),
                     );
-                  }
-                  var document = snapshot.data;
-                  var image = document!["profileImage"];
-                  return Container(
-                    margin: EdgeInsets.only(left: Dimension.padding.medium),
-                    decoration: BoxDecoration(
-                      border: Border.all(width: 2, color: Colors.white),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey.withOpacity(0.35),
-                          spreadRadius: 5,
-                          blurRadius: 5,
-                          offset: const Offset(0, 2),
-                        )
-                      ],
-                      shape: BoxShape.circle,
-                      image: image == null
-                          ? const DecorationImage(
-                              image: AssetImage('assets/images/avatar.png'),
-                              fit: BoxFit.contain)
-                          : DecorationImage(
-                              image: NetworkImage(image),
-                              fit: BoxFit.contain,
-                            ),
-                    ),
-                  );
-                }),
+                  }),
+              const SizedBox(
+                height: 5,
+              ),
+              StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+                  stream: getDataDoc(currentUser.uid, "users"),
+                  builder: (context, snapshot) {
+                    if (!snapshot.hasData) {
+                      return const Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    }
+                    var document = snapshot.data;
+                    return Text(
+                      document!["level"] ?? 'Your Level',
+                      style: const TextStyle(fontSize: 14, color: Colors.black),
+                    );
+                  }),
+            ],
           ),
-          actions: [
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Container(
-                  margin: EdgeInsets.only(right: Dimension.padding.medium),
-                  height: 46,
-                  width: 46,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Colors.deepPurple.shade900,
-                  ),
-                  alignment: Alignment.center,
-                  child: const Icon(
-                    Icons.notifications,
-                    color: Colors.white,
-                  ),
-                ),
-              ],
-            )
-          ],
-          backgroundColor: Colors.white,
         ),
+        leadingWidth:
+            screenSizeWidth < 600 ? screenSizeWidth / 4.5 : screenSizeWidth / 8,
+        leading: InkWell(
+          onTap: () {
+            Navigator.of(context).pushNamed('/EditProfile');
+          },
+          child: StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+              stream: getDataDoc(currentUser.uid, "users"),
+              builder: (context, snapshot) {
+                if (!snapshot.hasData) {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+                var document = snapshot.data;
+                var image = document!["profileImage"];
+                return Container(
+                  margin: EdgeInsets.only(left: Dimension.padding.medium),
+                  decoration: BoxDecoration(
+                    border: Border.all(width: 2, color: Colors.white),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.35),
+                        spreadRadius: 5,
+                        blurRadius: 5,
+                        offset: const Offset(0, 2),
+                      )
+                    ],
+                    shape: BoxShape.circle,
+                    image: image == null
+                        ? const DecorationImage(
+                            image: AssetImage('assets/images/avatar.png'),
+                            fit: BoxFit.contain)
+                        : DecorationImage(
+                            image: NetworkImage(image),
+                            fit: BoxFit.contain,
+                          ),
+                  ),
+                );
+              }),
+        ),
+        actions: [
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                margin: EdgeInsets.only(right: Dimension.padding.medium),
+                height: screenSizeWidth < 600
+                    ? screenSizeWidth / 9
+                    : screenSizeWidth / 17,
+                width: screenSizeWidth < 600
+                    ? screenSizeWidth / 9
+                    : screenSizeWidth / 17,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Colors.deepPurple.shade900,
+                ),
+                alignment: Alignment.center,
+                child: const Icon(
+                  Icons.notifications,
+                  color: Colors.white,
+                ),
+              ),
+            ],
+          )
+        ],
+        backgroundColor: Colors.white,
       ),
       body: SingleChildScrollView(
         child: Container(
@@ -148,14 +150,16 @@ class _HomePageState extends State<HomePage> {
             children: <Widget>[
               homeTitle(context, 'Dự án hiện tại', '/FormProject', Icons.add),
               SizedBox(
-                height: 160,
-                child: homeListProject(context),
+                height: screenSizeWidth < 600
+                    ? screenSizeWidth / 2.5
+                    : screenSizeWidth / 5,
+                child: homeListProject(context, screenSizeWidth),
               ),
               homeTitle(context, 'Công việc', '/CreateTask', Icons.add),
               SizedBox(
                 height: 220,
-                child: homeListTask(context),
-              )
+                child: homeListTask(context, screenSizeWidth),
+              ),
             ],
           ),
         ),
@@ -189,7 +193,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  homeListTask(BuildContext context) {
+  homeListTask(BuildContext context, screenSizeWidth) {
     return ListView.builder(
       itemCount: list.length - 1,
       itemBuilder: (context, index) {
@@ -202,8 +206,12 @@ class _HomePageState extends State<HomePage> {
                     .pushNamed('/ListTask', arguments: list[index]);
               },
               leading: Container(
-                height: 46,
-                width: 46,
+                height: screenSizeWidth < 600
+                    ? screenSizeWidth / 9
+                    : screenSizeWidth / 17,
+                width: screenSizeWidth < 600
+                    ? screenSizeWidth / 9
+                    : screenSizeWidth / 17,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   color: Colors.deepPurple.shade900,
@@ -229,7 +237,8 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  StreamBuilder<QuerySnapshot<Object?>> homeListProject(BuildContext context) {
+  StreamBuilder<QuerySnapshot<Object?>> homeListProject(
+      BuildContext context, screenSizeWidth) {
     return StreamBuilder<QuerySnapshot>(
       stream:
           FirebaseFirestore.instance.collection('projects').get().asStream(),
@@ -273,8 +282,12 @@ class _HomePageState extends State<HomePage> {
                         left: Dimension.padding.small,
                         right: Dimension.padding.small),
                     margin: EdgeInsets.only(right: Dimension.padding.small),
-                    height: 160,
-                    width: 160,
+                    height: screenSizeWidth < 600
+                        ? screenSizeWidth / 2.5
+                        : screenSizeWidth / 5,
+                    width: screenSizeWidth < 600
+                        ? screenSizeWidth / 2.5
+                        : screenSizeWidth / 5,
                     decoration: BoxDecoration(
                       borderRadius:
                           BorderRadius.circular(Dimension.radius.gigantic),
@@ -356,13 +369,11 @@ class _HomePageState extends State<HomePage> {
                                           mainAxisAlignment:
                                               MainAxisAlignment.start,
                                           children: [
-                                            Container(
-                                              child: Text(
-                                                '+${projectModel.employeeArray!.length - 3} ',
-                                                style: TextStyle(
-                                                    fontSize: 16,
-                                                    color: Colors.white),
-                                              ),
+                                            Text(
+                                              '+${projectModel.employeeArray!.length - 3} ',
+                                              style: const TextStyle(
+                                                  fontSize: 16,
+                                                  color: Colors.white),
                                             )
                                           ],
                                         )

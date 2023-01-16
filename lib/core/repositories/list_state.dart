@@ -15,4 +15,9 @@ final List<Color> colors = <Color>[
   Colors.green.shade900,
   Colors.yellow.shade900,
   Colors.red.shade900,
+  Colors.blue.shade900,
+  Colors.pink.shade900,
+  Colors.green.shade900,
+  Colors.yellow.shade900,
+  Colors.red.shade900,
 ];

@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:manager_apps/core/extensions/validator.dart';
 import 'package:manager_apps/models/user/user_model.dart';
 
 import '../../core/extensions/update_info.dart';
@@ -18,163 +19,197 @@ class _RegisterState extends State<Register> {
   TextEditingController passwordController = TextEditingController();
   TextEditingController confirmPasswordController = TextEditingController();
 
+  final formGlobalKey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(10),
-        child: ListView(
-          children: <Widget>[
-            Container(
-                alignment: Alignment.center,
-                padding: const EdgeInsets.all(10),
-                child: const Text(
-                  'Management App',
-                  style: TextStyle(
-                      color: Colors.deepPurple,
-                      fontWeight: FontWeight.w500,
-                      fontSize: 30),
-                )),
-            Container(
-                alignment: Alignment.center,
-                padding: const EdgeInsets.all(10),
-                child: const Text(
-                  'Register',
-                  style: TextStyle(fontSize: 20),
-                )),
-            Container(
-              padding: const EdgeInsets.all(10),
-              child: TextField(
-                controller: nameController,
-                decoration: InputDecoration(
-                  prefixIcon: Opacity(
-                    opacity: 0.3,
-                    child: Container(
-                      padding: EdgeInsets.only(left: 8, right: 8),
-                      width: 50,
-                      child: Image.asset(
-                        "assets/images/ic_user.png",
+        child: Center(
+          child: Form(
+            key: formGlobalKey,
+            child: ListView(
+              shrinkWrap: true,
+              children: <Widget>[
+                Container(
+                    alignment: Alignment.center,
+                    padding: const EdgeInsets.all(10),
+                    child: const Text(
+                      'Ứng dụng quản lý',
+                      style:
+                          TextStyle(fontWeight: FontWeight.w500, fontSize: 30),
+                    )),
+                Container(
+                    alignment: Alignment.center,
+                    padding: const EdgeInsets.all(10),
+                    child: const Text(
+                      'Đăng ký',
+                      style: TextStyle(fontSize: 20),
+                    )),
+                Container(
+                  padding: const EdgeInsets.all(10),
+                  child: TextFormField(
+                    controller: nameController,
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return "Vui lòng nhập Họ và tên!";
+                      }
+                      return null;
+                    },
+                    decoration: InputDecoration(
+                      prefixIcon: Opacity(
+                        opacity: 0.3,
+                        child: Container(
+                          padding: EdgeInsets.only(left: 8, right: 8),
+                          width: 50,
+                          child: Image.asset(
+                            "assets/images/ic_user.png",
+                          ),
+                        ),
                       ),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                      labelText: 'Họ và tên',
                     ),
                   ),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(6),
-                  ),
-                  labelText: 'Name',
                 ),
-              ),
-            ),
-            Container(
-              padding: const EdgeInsets.all(10),
-              child: TextField(
-                controller: emailController,
-                decoration: InputDecoration(
-                  prefixIcon: Opacity(
-                    opacity: 0.5,
-                    child: Container(
-                      padding: EdgeInsets.only(left: 5, right: 5),
-                      width: 50,
-                      child: Image.asset(
-                        "assets/images/ic_mail.png",
+                Container(
+                  padding: const EdgeInsets.all(10),
+                  child: TextFormField(
+                    controller: emailController,
+                    validator: (value) {
+                      if (!isEmail(value!)) {
+                        return 'Vui lòng nhập Email!';
+                      }
+                      return null;
+                    },
+                    decoration: InputDecoration(
+                      prefixIcon: Opacity(
+                        opacity: 0.5,
+                        child: Container(
+                          padding: EdgeInsets.only(left: 5, right: 5),
+                          width: 50,
+                          child: Image.asset(
+                            "assets/images/ic_mail.png",
+                          ),
+                        ),
                       ),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                      labelText: 'Email',
                     ),
                   ),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(6),
-                  ),
-                  labelText: 'Email',
                 ),
-              ),
-            ),
-            Container(
-              padding: const EdgeInsets.all(10),
-              child: TextField(
-                obscureText: true,
-                controller: passwordController,
-                decoration: InputDecoration(
-                  prefixIcon: Opacity(
-                    opacity: 0.2,
-                    child: Container(
-                      padding: EdgeInsets.only(left: 5, right: 5),
-                      width: 50,
-                      child: Image.asset(
-                        "assets/images/ic_password.png",
+                Container(
+                  padding: const EdgeInsets.all(10),
+                  child: TextFormField(
+                    obscureText: true,
+                    controller: passwordController,
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return "Vui lòng nhập mật khẩu!";
+                      } else if (value.length < 5) {
+                        return "Vui lòng nhập mật khẩu trên 5 ký tự!";
+                      }
+                      return null;
+                    },
+                    decoration: InputDecoration(
+                      prefixIcon: Opacity(
+                        opacity: 0.2,
+                        child: Container(
+                          padding: EdgeInsets.only(left: 5, right: 5),
+                          width: 50,
+                          child: Image.asset(
+                            "assets/images/ic_password.png",
+                          ),
+                        ),
                       ),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                      labelText: 'Mật khẩu',
                     ),
                   ),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(6),
-                  ),
-                  labelText: 'Password',
                 ),
-              ),
-            ),
-            Container(
-              padding: const EdgeInsets.fromLTRB(10, 10, 10, 20),
-              child: TextField(
-                obscureText: true,
-                controller: confirmPasswordController,
-                decoration: InputDecoration(
-                  prefixIcon: Opacity(
-                    opacity: 0.2,
-                    child: Container(
-                      padding: EdgeInsets.only(left: 5, right: 5),
-                      width: 50,
-                      child: Image.asset(
-                        "assets/images/ic_password.png",
+                Container(
+                  padding: const EdgeInsets.fromLTRB(10, 10, 10, 20),
+                  child: TextFormField(
+                    obscureText: true,
+                    controller: confirmPasswordController,
+                    validator: (value) {
+                      if (value != passwordController.text) {
+                        return "Vui lòng nhập mật khẩu trùng nhau!";
+                      }
+                      return null;
+                    },
+                    decoration: InputDecoration(
+                      prefixIcon: Opacity(
+                        opacity: 0.2,
+                        child: Container(
+                          padding: EdgeInsets.only(left: 5, right: 5),
+                          width: 50,
+                          child: Image.asset(
+                            "assets/images/ic_password.png",
+                          ),
+                        ),
                       ),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                      labelText: 'Nhập lại mật khẩu',
                     ),
                   ),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(6),
-                  ),
-                  labelText: 'Confirm Password',
                 ),
-              ),
-            ),
-            Container(
-                height: 50,
-                padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-                child: ElevatedButton(
-                  child: const Text(
-                    'Register',
-                    style: TextStyle(fontSize: 16),
-                  ),
-                  onPressed: () {
-                    print('create');
-                    FirebaseAuth.instance
-                        .createUserWithEmailAndPassword(
-                            email: emailController.text,
-                            password: passwordController.text)
-                        .then(
-                      (value) {
-                        if (value.additionalUserInfo != null) {
-                          postDetailsToFirestore();
+                Container(
+                    height: 50,
+                    padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                    child: ElevatedButton(
+                      child: const Text(
+                        'Đăng ký',
+                        style: TextStyle(fontSize: 16),
+                      ),
+                      onPressed: () {
+                        if (formGlobalKey.currentState!.validate()) {
+                          formGlobalKey.currentState!.save();
+                          FirebaseAuth.instance
+                              .createUserWithEmailAndPassword(
+                                  email: emailController.text,
+                                  password: passwordController.text)
+                              .then(
+                            (value) {
+                              if (value.additionalUserInfo != null) {
+                                postDetailsToFirestore();
+                              }
+                            },
+                          ).onError((error, stackTrace) {
+                            print('Error ${error.toString()}');
+                          });
                         }
                       },
-                    ).onError((error, stackTrace) {
-                      print('Error ${error.toString()}');
-                    });
-                  },
-                )),
-            Row(
-              children: <Widget>[
-                const Text(
-                  'Already a User?',
+                    )),
+                Row(
+                  children: <Widget>[
+                    const Text(
+                      'Đã có tài khoản?',
+                    ),
+                    TextButton(
+                      child: const Text(
+                        'Đăng nhập',
+                        style: TextStyle(fontSize: 16),
+                      ),
+                      onPressed: () {
+                        Navigator.of(context).pushNamed('/LogIn');
+                      },
+                    )
+                  ],
+                  mainAxisAlignment: MainAxisAlignment.center,
                 ),
-                TextButton(
-                  child: const Text(
-                    'Log in',
-                    style: TextStyle(fontSize: 16),
-                  ),
-                  onPressed: () {
-                    Navigator.of(context).pushNamed('/LogIn');
-                  },
-                )
               ],
-              mainAxisAlignment: MainAxisAlignment.center,
             ),
-          ],
+          ),
         ),
       ),
     );

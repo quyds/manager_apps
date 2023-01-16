@@ -22,7 +22,7 @@ class _LoginHomeState extends State<LoginHome> {
         future: _initializeFirebase(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
-            return LogIn();
+            return const LogIn();
           }
           return const Center(
             child: CircularProgressIndicator(),

@@ -22,8 +22,6 @@ class RouteGenerator {
       case ('/EditProfile'):
         return MaterialPageRoute(builder: (context) => const EditProfilePage());
       case ('/CreateTask'):
-        // String? projectId = settings.arguments as String;
-
         TaskArguments? arguments = settings.arguments == null
             ? TaskArguments()
             : settings.arguments as TaskArguments;

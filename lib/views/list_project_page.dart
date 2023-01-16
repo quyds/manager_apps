@@ -14,12 +14,18 @@ class ListProjectPage extends StatefulWidget {
 }
 
 class _ListProjectPageState extends State<ListProjectPage> {
-  // late List listTask;
   TaskModel? taskModel;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () {
+              Navigator.of(context).pushNamed('/Main');
+            },
+          ),
           title: const Text('Danh sách dự án'),
         ),
         body: Column(
@@ -47,7 +53,7 @@ class _ListProjectPageState extends State<ListProjectPage> {
             ),
             Expanded(
               child: Container(
-                padding: const EdgeInsets.all(10),
+                padding: EdgeInsets.all(Dimension.padding.medium),
                 color: Colors.grey.shade300,
                 child: StreamBuilder<QuerySnapshot>(
                     stream: FirebaseFirestore.instance
@@ -65,7 +71,6 @@ class _ListProjectPageState extends State<ListProjectPage> {
                             children: const [Text('No Tasks')],
                           );
                         }
-
                         return ListView.builder(
                           itemCount: snapshot.data!.docs.length,
                           itemBuilder: ((context, index) {
