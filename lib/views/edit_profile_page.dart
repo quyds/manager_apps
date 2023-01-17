@@ -5,13 +5,17 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:manager_apps/const/app_constants.dart';
+import 'package:manager_apps/models/user/user_model.dart';
 import 'package:path/path.dart';
 
 import '../core/extensions/update_info.dart';
 import '../core/repositories/get_data_collection_doc.dart';
 
 class EditProfilePage extends StatefulWidget {
-  const EditProfilePage({super.key});
+  final UserModel? dataUser;
+  final UserModel? userAuth;
+  const EditProfilePage({super.key, this.dataUser, this.userAuth});
 
   @override
   State<EditProfilePage> createState() => _EditProfilePageState();
@@ -21,11 +25,25 @@ class _EditProfilePageState extends State<EditProfilePage> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final firestoreInstance = FirebaseFirestore.instance;
 
-  TextEditingController nameController = TextEditingController();
-  TextEditingController phoneController = TextEditingController();
-  TextEditingController levelController = TextEditingController();
+  late TextEditingController nameController;
+  late TextEditingController phoneController;
+  late TextEditingController levelController;
 
   File? file;
+
+  @override
+  void initState() {
+    if (widget.dataUser == null) {
+      nameController = TextEditingController();
+      phoneController = TextEditingController();
+      levelController = TextEditingController();
+    } else {
+      nameController = TextEditingController(text: widget.dataUser?.name);
+      phoneController = TextEditingController(text: widget.dataUser?.phone);
+      levelController = TextEditingController(text: widget.dataUser?.level);
+    }
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,34 +54,28 @@ class _EditProfilePageState extends State<EditProfilePage> {
           padding: const EdgeInsets.all(10.0),
           child: Column(
             children: [
-              Container(
+              SizedBox(
                 height: 80,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
+                  children: const [
                     Text(
-                      'Edit Profile',
+                      'Chỉnh sửa thông tin',
                       style: TextStyle(fontSize: 24),
                     )
                   ],
                 ),
               ),
               streamBuilderEditImage(currentUser),
-              SizedBox(
-                height: 30,
-              ),
+              kSpacingHeight32,
               streamBuilderEditInfo(currentUser, "name", "Name"),
-              SizedBox(
-                height: 30,
-              ),
+              kSpacingHeight32,
               streamBuilderEditPhone(currentUser, "phone", "Phone"),
-              SizedBox(
-                height: 30,
-              ),
+              kSpacingHeight32,
               streamBuilderEditLevel(currentUser, "level", "Level"),
               Container(
-                margin: EdgeInsets.only(top: 10),
+                margin: const EdgeInsets.only(top: 10),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -77,7 +89,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                             ),
                           ),
                         ),
-                        child: Text('Back'),
+                        child: const Text('Trở lại'),
                         onPressed: () {
                           Navigator.of(context).pop();
                         },
@@ -93,7 +105,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                             ),
                           ),
                         ),
-                        child: Text('Update Profile'),
+                        child: const Text('Cập nhật thông tin'),
                         onPressed: () {
                           updateProfile(context);
                         },
@@ -150,7 +162,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
       stream: getDataDoc(currentUser!.uid, "users"),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
-          return new CircularProgressIndicator();
+          return const Center(child: CircularProgressIndicator());
         }
         var document = snapshot.data;
         var data = document![name];
@@ -159,7 +171,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
         return TextField(
           controller: nameController = TextEditingController(text: data),
           decoration: InputDecoration(
-              labelText: labelName, border: OutlineInputBorder()),
+              labelText: labelName, border: const OutlineInputBorder()),
         );
       },
     );
@@ -171,7 +183,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
       stream: getDataDoc(currentUser!.uid, "users"),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
-          return new CircularProgressIndicator();
+          return const Center(child: CircularProgressIndicator());
         }
         var document = snapshot.data;
         var data = document![name];
@@ -179,7 +191,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
         return TextField(
           controller: phoneController = TextEditingController(text: data),
           decoration: InputDecoration(
-              labelText: labelName, border: OutlineInputBorder()),
+              labelText: labelName, border: const OutlineInputBorder()),
         );
       },
     );
@@ -191,7 +203,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
       stream: getDataDoc(currentUser!.uid, "users"),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
-          return new CircularProgressIndicator();
+          return const Center(child: CircularProgressIndicator());
         }
         var document = snapshot.data;
         var data = document![name];
@@ -199,7 +211,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
         return TextField(
           controller: levelController = TextEditingController(text: data),
           decoration: InputDecoration(
-              labelText: labelName, border: OutlineInputBorder()),
+              labelText: labelName, border: const OutlineInputBorder()),
         );
       },
     );
@@ -211,11 +223,10 @@ class _EditProfilePageState extends State<EditProfilePage> {
       stream: getDataDoc(currentUser!.uid, "users"),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
-          return new CircularProgressIndicator();
+          return const Center(child: CircularProgressIndicator());
         }
         var document = snapshot.data;
         var data = document!["profileImage"];
-        debugPrint('image ${data}');
         return InkWell(
           onTap: () {
             chooseImage();
@@ -228,13 +239,14 @@ class _EditProfilePageState extends State<EditProfilePage> {
               shape: BoxShape.circle,
               image: file == null
                   ? data == null
-                      ? DecorationImage(
+                      ? const DecorationImage(
                           image: AssetImage('assets/images/avatar.png'),
                           fit: BoxFit.cover)
                       : DecorationImage(
                           image: NetworkImage(data), fit: BoxFit.cover)
                   : DecorationImage(image: FileImage(file!), fit: BoxFit.cover),
             ),
+            alignment: Alignment.center,
             child: Container(
                 height: 160,
                 width: 160,
@@ -242,12 +254,11 @@ class _EditProfilePageState extends State<EditProfilePage> {
                   borderRadius: BorderRadius.circular(50),
                   color: Colors.blue,
                 ),
-                margin: EdgeInsets.only(left: 110, top: 120, right: 10),
-                child: Icon(
+                margin: const EdgeInsets.only(left: 110, top: 120, right: 10),
+                child: const Icon(
                   Icons.edit,
                   size: 20,
                 )),
-            alignment: Alignment.center,
           ),
         );
       },

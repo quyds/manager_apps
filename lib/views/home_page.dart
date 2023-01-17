@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:manager_apps/core/extensions/custom_style.dart';
 import 'package:manager_apps/models/project/project_model.dart';
+import 'package:manager_apps/models/user_arguments_model.dart';
 import 'package:manager_apps/views/main_page.dart';
 
 import '../const/app_constants.dart';
@@ -25,6 +26,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     var screenSizeWidth = MediaQuery.of(context).size.width;
+    List userAuth = [];
 
     User? currentUser = _auth.currentUser;
 
@@ -47,8 +49,9 @@ class _HomePageState extends State<HomePage> {
                       );
                     }
                     var document = snapshot.data;
+                    userAuth.add(document!["name"]);
                     return Text(
-                      document!["name"] ?? 'Your Name',
+                      document["name"] ?? 'Your Name',
                       style: const TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
@@ -67,8 +70,9 @@ class _HomePageState extends State<HomePage> {
                       );
                     }
                     var document = snapshot.data;
+                    userAuth.add(document!["level"]);
                     return Text(
-                      document!["level"] ?? 'Your Level',
+                      document["level"] ?? 'Your Level',
                       style: const TextStyle(fontSize: 14, color: Colors.black),
                     );
                   }),
@@ -79,7 +83,16 @@ class _HomePageState extends State<HomePage> {
             screenSizeWidth < 600 ? screenSizeWidth / 4.5 : screenSizeWidth / 8,
         leading: InkWell(
           onTap: () {
-            Navigator.of(context).pushNamed('/EditProfile');
+            print('user au ${userAuth}');
+            Navigator.of(context).pushNamed(
+              '/EditProfile',
+              arguments: UserArguments(
+                  userAuth: UserModel(
+                      uid: userAuth[3],
+                      name: userAuth[0],
+                      level: userAuth[1],
+                      profileImage: userAuth[2])),
+            );
           },
           child: StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
               stream: getDataDoc(currentUser.uid, "users"),
@@ -91,6 +104,8 @@ class _HomePageState extends State<HomePage> {
                 }
                 var document = snapshot.data;
                 var image = document!["profileImage"];
+                userAuth.add(image);
+                userAuth.add(document["uid"]);
                 return Container(
                   margin: EdgeInsets.only(left: Dimension.padding.medium),
                   decoration: BoxDecoration(

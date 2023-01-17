@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'account_page.dart';
 import 'home_page.dart';
-import 'my_task_page.dart';
+import 'list_users_page.dart';
 import 'news_page.dart';
 
 class MainPage extends StatefulWidget {
@@ -15,7 +15,7 @@ class MainPage extends StatefulWidget {
 class _MainPageState extends State<MainPage> {
   final List<Widget> _children = [
     const HomePage(),
-    const MyTaskPage(),
+    const ListUsers(),
     const NewsPage(),
     const AccountPage()
   ];

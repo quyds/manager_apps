@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:manager_apps/models/task_arguments_model.dart';
 import 'package:manager_apps/models/task/task_model.dart';
+import 'package:manager_apps/models/user/user_model.dart';
+import 'package:manager_apps/models/user_arguments_model.dart';
 import 'package:manager_apps/views/auth/login_page.dart';
 import 'package:manager_apps/views/auth/register_page.dart';
 import 'package:manager_apps/views/edit_profile_page.dart';
@@ -19,8 +21,26 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (context) => const MainPage());
       case ('/Home'):
         return MaterialPageRoute(builder: (context) => const HomePage());
+
       case ('/EditProfile'):
-        return MaterialPageRoute(builder: (context) => const EditProfilePage());
+        UserArguments? arguments = settings.arguments == null
+            ? UserArguments()
+            : settings.arguments as UserArguments;
+        UserModel? userModelDetail = settings.arguments != null
+            ? UserModel.fromMap(arguments.userModel)
+            : null;
+
+        // UserModel? userAuth = arguments.userAuth == null
+        //     ? UserModel()
+        //     : arguments.userAuth as UserModel;
+        // print('userAthu ${userAuth}');
+        // print('usermodel ${userModelDetail?.profileImage}');
+        return MaterialPageRoute(
+            builder: (context) => EditProfilePage(
+                  dataUser: userModelDetail,
+                  // userAuth: userAuth,
+                ),
+            settings: settings);
       case ('/CreateTask'):
         TaskArguments? arguments = settings.arguments == null
             ? TaskArguments()

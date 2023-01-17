@@ -8,26 +8,28 @@ class UserModel {
   String? phone;
   String? level;
   var timeStamp;
+  String? role;
 
-  UserModel({
-    this.uid,
-    this.email,
-    this.name,
-    this.profileImage,
-    this.phone,
-    this.level,
-    this.timeStamp,
-  });
+  UserModel(
+      {this.uid,
+      this.email,
+      this.name,
+      this.profileImage,
+      this.phone,
+      this.level,
+      this.timeStamp,
+      this.role});
 
   factory UserModel.fromMap(map) {
     return UserModel(
-        uid: map['uid'],
-        email: map['email'],
-        name: map['name'],
+        uid: map['uid'] ?? '',
+        email: map['email'] ?? '',
+        name: map['name'] ?? '',
         profileImage: map['profileImage'],
-        phone: map['phone'],
-        level: map['level'],
-        timeStamp: map['timeStamp']);
+        phone: map['phone'] ?? '',
+        level: map['level'] ?? '',
+        timeStamp: map['timeStamp'],
+        role: map['role']);
   }
 
   Map<String, dynamic> toMap() {
@@ -39,6 +41,7 @@ class UserModel {
       'phone': phone,
       'level': level,
       'timeStamp': FieldValue.serverTimestamp(),
+      'role': role
     };
   }
 }

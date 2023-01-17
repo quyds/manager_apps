@@ -336,7 +336,7 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
                                         snapshot.data!.docs[i];
                                     currencyItems.add(
                                       DropdownMenuItem(
-                                        value: "${snap.id}",
+                                        value: snap.id,
                                         child: SizedBox(
                                           width: 80,
                                           child: Text(

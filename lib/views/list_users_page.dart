@@ -3,9 +3,10 @@ import 'package:flutter/material.dart';
 
 import '../const/app_constants.dart';
 import '../models/user/user_model.dart';
+import '../models/user_arguments_model.dart';
 
-class MyTaskPage extends StatelessWidget {
-  const MyTaskPage({super.key});
+class ListUsers extends StatelessWidget {
+  const ListUsers({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -34,8 +35,14 @@ class MyTaskPage extends StatelessWidget {
               itemBuilder: (context, index) {
                 UserModel? userModel =
                     UserModel.fromMap(snapshot.data!.docs[index].data());
-                var userImage = userModel.profileImage;
+                String? userImage = userModel.profileImage;
                 return ListTile(
+                  onTap: () {
+                    print('user model ${userImage}');
+                    Navigator.of(context).pushNamed('/EditProfile',
+                        arguments: UserArguments(
+                            userModel: snapshot.data!.docs[index].data()));
+                  },
                   leading: Container(
                     width: 46,
                     height: 46,
