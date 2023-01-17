@@ -161,9 +161,10 @@ class _FormProjectPageState extends State<FormProjectPage> {
 
     const snackBar = SnackBar(
       content: Text('Tạo thành công !'),
+      behavior: SnackBarBehavior.floating,
     );
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
 
-    Navigator.of(context).pop();
+    Navigator.of(context).pushNamed('/Main');
   }
 }

@@ -10,8 +10,8 @@ class MyTaskPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Danh sách nhân viên')),
-      body: Container(child: homeListUser(context)),
+      appBar: AppBar(title: const Text('Danh sách nhân viên')),
+      body: SingleChildScrollView(child: homeListUser(context)),
     );
   }
 
@@ -24,41 +24,42 @@ class MyTaskPage extends StatelessWidget {
           }
           if (snapshot.hasData) {
             if (snapshot.data!.docs.isEmpty) {
-              return Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: const [Text('No User')],
+              return const Center(
+                child: Text('No User'),
               );
             }
-            return ListView.builder(
+            return ListView.separated(
+              shrinkWrap: true,
               itemCount: snapshot.data!.docs.length,
-              scrollDirection: Axis.horizontal,
               itemBuilder: (context, index) {
                 UserModel? userModel =
                     UserModel.fromMap(snapshot.data!.docs[index].data());
                 var userImage = userModel.profileImage;
-                return Container(
-                    // child: ListTile(
-                    //     leading: Container(
-                    //       width: 46,
-                    //       height: 46,
-                    //       margin: EdgeInsets.only(
-                    //           left: Dimension.padding.small,
-                    //           right: Dimension.padding.small),
-                    //       decoration: BoxDecoration(
-                    //         shape: BoxShape.circle,
-                    //         image: userImage == null
-                    //             ? const DecorationImage(
-                    //                 image: AssetImage('assets/images/avatar.png'),
-                    //                 fit: BoxFit.contain)
-                    //             : DecorationImage(
-                    //                 image: NetworkImage(userImage),
-                    //                 fit: BoxFit.contain,
-                    //               ),
-                    //       ),
-                    //     ),
-                    //     ),
-                    );
+                return ListTile(
+                  leading: Container(
+                    width: 46,
+                    height: 46,
+                    margin: EdgeInsets.only(
+                        left: Dimension.padding.small,
+                        right: Dimension.padding.small),
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      image: userImage == null
+                          ? const DecorationImage(
+                              image: AssetImage('assets/images/avatar.png'),
+                              fit: BoxFit.contain)
+                          : DecorationImage(
+                              image: NetworkImage(userImage),
+                              fit: BoxFit.contain,
+                            ),
+                    ),
+                  ),
+                  title: Text(userModel.name ?? ''),
+                  subtitle: Text(userModel.level ?? ''),
+                );
               },
+              separatorBuilder: (BuildContext context, int index) =>
+                  kSpacingHeight2,
             );
           }
           return const Center(child: CircularProgressIndicator());

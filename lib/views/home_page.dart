@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:manager_apps/core/extensions/custom_style.dart';
 import 'package:manager_apps/models/project/project_model.dart';
+import 'package:manager_apps/views/main_page.dart';
 
 import '../const/app_constants.dart';
 import '../core/extensions/date_format.dart';
@@ -129,7 +130,7 @@ class _HomePageState extends State<HomePage> {
                     : screenSizeWidth / 17,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: Colors.deepPurple.shade900,
+                  color: Colors.blue.shade900,
                 ),
                 alignment: Alignment.center,
                 child: const Icon(
@@ -148,14 +149,14 @@ class _HomePageState extends State<HomePage> {
               left: Dimension.padding.medium, right: Dimension.padding.medium),
           child: Column(
             children: <Widget>[
-              homeTitle(context, 'Dự án hiện tại', '/FormProject', Icons.add),
+              homeTitle(context, 'Dự án hiện tại', '', null),
               SizedBox(
                 height: screenSizeWidth < 600
                     ? screenSizeWidth / 2.5
                     : screenSizeWidth / 5,
                 child: homeListProject(context, screenSizeWidth),
               ),
-              homeTitle(context, 'Công việc', '/CreateTask', Icons.add),
+              homeTitle(context, 'Công việc', '', null),
               SizedBox(
                 height: 220,
                 child: homeListTask(context, screenSizeWidth),
@@ -200,6 +201,22 @@ class _HomePageState extends State<HomePage> {
         return FutureBuilder(
           future: getNumTasks(list[index]),
           builder: (context, snapshot) {
+            List nameList = [];
+            for (int i = 0; i < list[index].length; i++) {
+              if (list[index] == 'To Do') {
+                nameList.add('Thực hiện');
+              }
+              if (list[index] == 'In Progress') {
+                nameList.add('Đang thực hiện');
+              }
+              if (list[index] == 'Done') {
+                nameList.add('Hoàn thành');
+              }
+              if (list[index] == 'Remove') {
+                nameList.add('Đã xóa');
+              }
+            }
+
             return ListTile(
               onTap: () {
                 Navigator.of(context)
@@ -214,7 +231,7 @@ class _HomePageState extends State<HomePage> {
                     : screenSizeWidth / 17,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: Colors.deepPurple.shade900,
+                  color: Colors.blue.shade900,
                 ),
                 alignment: Alignment.center,
                 child: Icon(
@@ -223,11 +240,11 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
               title: Text(
-                list[index],
+                nameList[index],
                 style: CustomTextStyle.titleOfTextStyle,
               ),
               subtitle: Text(
-                '${snapshot.data?.length} Task',
+                '${snapshot.data?.length} Công việc',
                 style: CustomTextStyle.subOfTextStyle,
               ),
             );
@@ -273,7 +290,10 @@ class _HomePageState extends State<HomePage> {
               }
 
               return SingleChildScrollView(
-                child: InkWell(
+                child: GestureDetector(
+                  onTapDown: (TapDownDetails details) {
+                    _showPopupMenu(details.globalPosition, projectModel.id);
+                  },
                   onTap: () {
                     Navigator.of(context).pushNamed('/ListProject');
                   },
@@ -297,7 +317,7 @@ class _HomePageState extends State<HomePage> {
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         Text(
-                          '${projectModel.taskArray!.length} Task',
+                          '${projectModel.taskArray!.length} Công việc',
                           style: const TextStyle(
                               fontSize: 16, color: Colors.white),
                         ),
@@ -310,7 +330,7 @@ class _HomePageState extends State<HomePage> {
                           overflow: TextOverflow.ellipsis,
                         ),
                         Text(
-                          getFormatedMonthYear(projectModel.createdAt),
+                          'Tháng ${getFormatedMonthYear(projectModel.createdAt)}',
                           style: const TextStyle(
                               fontSize: 16, color: Colors.white),
                         ),
@@ -416,5 +436,76 @@ class _HomePageState extends State<HomePage> {
     filterState = result.docs.map((e) => e.data()).toList();
 
     return filterState;
+  }
+
+  void _showPopupMenu(Offset offset, String? id) async {
+    double left = offset.dx;
+    double top = offset.dy;
+
+    await showMenu(
+      context: context,
+      position: RelativeRect.fromLTRB(left, top, left, top),
+      items: [
+        const PopupMenuItem(
+          value: 1,
+          child: Text("Edit"),
+        ),
+        const PopupMenuItem(
+          value: 2,
+          child: Text("Delete"),
+        ),
+      ],
+      elevation: 8.0,
+    ).then((value) {
+      if (value == 1) {
+        Navigator.of(context).pushNamed('/FormaaProject').then((value) {
+          setState(() {});
+        });
+      }
+      if (value == 2) {
+        showAlertDialog(context, id);
+      }
+    });
+  }
+
+  showAlertDialog(BuildContext context, id) {
+    Widget cancelButton = TextButton(
+      child: const Text("Cancel"),
+      onPressed: () {
+        Navigator.of(context).pop();
+      },
+    );
+    Widget continueButton = TextButton(
+      child: const Text("Continue"),
+      onPressed: () {
+        final docUser =
+            FirebaseFirestore.instance.collection('projects').doc(id);
+        docUser.delete();
+        const snackBar = SnackBar(
+          content: Text(
+            'Đã xóa thành công!',
+          ),
+          behavior: SnackBarBehavior.floating,
+        );
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        Navigator.of(context).pushNamed('/Main');
+      },
+    );
+
+    AlertDialog alert = AlertDialog(
+      title: const Text("Thông báo"),
+      content: const Text("Bạn có chắc chắn muốn xóa không?"),
+      actions: [
+        cancelButton,
+        continueButton,
+      ],
+    );
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
   }
 }

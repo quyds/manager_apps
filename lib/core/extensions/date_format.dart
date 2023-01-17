@@ -31,7 +31,7 @@ getFormatedDate(DateTime? _date) {
 
 getFormatedMonthYear(DateTime? _date) {
   if (_date != null) {
-    DateFormat inputFormat = DateFormat('MMMM y');
+    DateFormat inputFormat = DateFormat('MM y');
     String format = inputFormat.format(_date);
     return format;
   }
