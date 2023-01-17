@@ -3,9 +3,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:manager_apps/core/extensions/custom_style.dart';
 import 'package:manager_apps/models/project/project_model.dart';
-import 'package:manager_apps/models/user_arguments_model.dart';
-import 'package:manager_apps/views/main_page.dart';
-
 import '../const/app_constants.dart';
 import '../core/extensions/date_format.dart';
 import '../core/repositories/get_data_collection_doc.dart';
@@ -86,12 +83,6 @@ class _HomePageState extends State<HomePage> {
             print('user au ${userAuth}');
             Navigator.of(context).pushNamed(
               '/EditProfile',
-              arguments: UserArguments(
-                  userAuth: UserModel(
-                      uid: userAuth[3],
-                      name: userAuth[0],
-                      level: userAuth[1],
-                      profileImage: userAuth[2])),
             );
           },
           child: StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
