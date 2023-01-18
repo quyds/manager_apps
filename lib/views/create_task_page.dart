@@ -289,6 +289,12 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
                                     value: selectedEmployee,
                                     isExpanded: false,
                                     items: currencyItems,
+                                    validator: (value) {
+                                      if (value == null) {
+                                        return 'Lỗi nhân viên';
+                                      }
+                                      return null;
+                                    },
                                     onChanged: (currencyValue) {
                                       const snackBar = SnackBar(
                                         content: Text(
@@ -316,17 +322,15 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Container(
-                              child: Text(
-                                'Dự án',
-                                style: CustomTextStyle.labelOfTextStyle,
-                              ),
+                            const Text(
+                              'Dự án',
+                              style: CustomTextStyle.labelOfTextStyle,
                             ),
                             StreamBuilder<QuerySnapshot>(
                               stream: getDataCollection('projects'),
                               builder: (context, snapshot) {
                                 if (!snapshot.hasData) {
-                                  return new CircularProgressIndicator();
+                                  return const CircularProgressIndicator();
                                 } else {
                                   List<DropdownMenuItem> currencyItems = [];
                                   for (int i = 0;
@@ -363,6 +367,12 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
                                     value: selectedProject,
                                     isExpanded: false,
                                     items: currencyItems,
+                                    validator: (value) {
+                                      if (value == null) {
+                                        return 'Lỗi dự án';
+                                      }
+                                      return null;
+                                    },
                                     onChanged: (currencyValue) {
                                       const snackBar = SnackBar(
                                         content: Text(

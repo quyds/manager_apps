@@ -1,8 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:manager_apps/core/extensions/custom_style.dart';
 import 'package:manager_apps/models/project/project_model.dart';
+import 'package:manager_apps/models/task/task_model.dart';
 import '../const/app_constants.dart';
 import '../core/extensions/date_format.dart';
 import '../core/repositories/get_data_collection_doc.dart';
@@ -297,12 +299,15 @@ class _HomePageState extends State<HomePage> {
 
               return SingleChildScrollView(
                 child: GestureDetector(
-                  onTapDown: (TapDownDetails details) {
-                    _showPopupMenu(details.globalPosition, projectModel.id);
-                  },
                   onTap: () {
                     Navigator.of(context).pushNamed('/ListProject');
                   },
+                  onDoubleTap: () {
+                    _showPopupMenu(Offset(120, 250), projectModel.id);
+                  },
+                  // onDoubleTapDown: (TapDownDetails details) {
+                  //   _showPopupMenu(details.globalPosition, projectModel.id);
+                  // },
                   child: Container(
                     padding: EdgeInsets.only(
                         left: Dimension.padding.small,
@@ -454,11 +459,11 @@ class _HomePageState extends State<HomePage> {
       items: [
         const PopupMenuItem(
           value: 1,
-          child: Text("Edit"),
+          child: Text("Chỉnh sửa"),
         ),
         const PopupMenuItem(
           value: 2,
-          child: Text("Delete"),
+          child: Text("Xóa"),
         ),
       ],
       elevation: 8.0,
@@ -476,17 +481,19 @@ class _HomePageState extends State<HomePage> {
 
   showAlertDialog(BuildContext context, id) {
     Widget cancelButton = TextButton(
-      child: const Text("Cancel"),
+      child: const Text("Hủy"),
       onPressed: () {
         Navigator.of(context).pop();
       },
     );
     Widget continueButton = TextButton(
-      child: const Text("Continue"),
+      child: const Text("Tiếp tục"),
       onPressed: () {
         final docUser =
             FirebaseFirestore.instance.collection('projects').doc(id);
+        deleteByProjectId(id);
         docUser.delete();
+
         const snackBar = SnackBar(
           content: Text(
             'Đã xóa thành công!',
@@ -513,5 +520,21 @@ class _HomePageState extends State<HomePage> {
         return alert;
       },
     );
+  }
+
+  void deleteByProjectId(String? query) async {
+    final result = await FirebaseFirestore.instance
+        .collection('tasks')
+        .where('project', isEqualTo: query)
+        .get();
+
+    filterState = result.docs.map((e) => e.data()).map((el) {
+      final element = el;
+      TaskModel taskModel = TaskModel.fromMap(element);
+
+      final docUser =
+          FirebaseFirestore.instance.collection('tasks').doc(taskModel.id);
+      docUser.delete();
+    }).toList();
   }
 }

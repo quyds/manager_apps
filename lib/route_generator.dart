@@ -29,16 +29,9 @@ class RouteGenerator {
         UserModel? userModelDetail = settings.arguments != null
             ? UserModel.fromMap(arguments.userModel)
             : null;
-
-        // UserModel? userAuth = arguments.userAuth == null
-        //     ? UserModel()
-        //     : arguments.userAuth as UserModel;
-        // print('userAthu ${userAuth}');
-        // print('usermodel ${userModelDetail?.profileImage}');
         return MaterialPageRoute(
             builder: (context) => EditProfilePage(
                   dataUser: userModelDetail,
-                  // userAuth: userAuth,
                 ),
             settings: settings);
       case ('/CreateTask'):

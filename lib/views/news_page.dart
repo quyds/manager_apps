@@ -6,8 +6,8 @@ class NewsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('News page')),
-      body: Center(
+      appBar: AppBar(title: const Text('News page')),
+      body: const Center(
         child: Text(
           'News page',
           style: TextStyle(fontSize: 30),

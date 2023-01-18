@@ -38,7 +38,6 @@ class ListUsers extends StatelessWidget {
                 String? userImage = userModel.profileImage;
                 return ListTile(
                   onTap: () {
-                    print('user model ${userImage}');
                     Navigator.of(context).pushNamed('/EditProfile',
                         arguments: UserArguments(
                             userModel: snapshot.data!.docs[index].data()));

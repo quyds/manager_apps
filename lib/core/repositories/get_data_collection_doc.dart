@@ -1,6 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
-import 'package:manager_apps/models/project/project_model.dart';
 
 Stream<DocumentSnapshot<Map<String, dynamic>>> getDataDoc(
     String id, String index) {

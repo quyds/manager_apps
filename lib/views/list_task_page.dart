@@ -227,11 +227,8 @@ class _ListTaskPageState extends State<ListTaskPage> {
         .where('state', isEqualTo: query)
         .get();
 
-    print('selectedStateValue ${result.size}');
-
     setState(() {
       filterState = result.docs.map((e) => e.data()).toList();
-      print('filterState ${filterState}');
     });
   }
 }
