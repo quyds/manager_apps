@@ -10,6 +10,7 @@ import 'package:manager_apps/views/form_project_page.dart';
 import 'package:manager_apps/views/list_project_page.dart';
 import 'package:manager_apps/views/list_task_page.dart';
 import 'package:manager_apps/views/main_page.dart';
+import 'package:manager_apps/views/notification_page.dart';
 
 import 'views/home_page.dart';
 import 'views/create_task_page.dart';
@@ -21,6 +22,9 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (context) => const MainPage());
       case ('/Home'):
         return MaterialPageRoute(builder: (context) => const HomePage());
+      case ('/Notification'):
+        return MaterialPageRoute(
+            builder: (context) => const NotificationPage());
 
       case ('/EditProfile'):
         UserArguments? arguments = settings.arguments == null

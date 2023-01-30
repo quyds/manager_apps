@@ -1,9 +1,12 @@
+// import 'dart:html';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:manager_apps/const/app_constants.dart';
 import 'package:manager_apps/core/extensions/custom_style.dart';
 import 'package:manager_apps/core/repositories/get_data_collection_doc.dart';
+import 'package:manager_apps/models/feedItem/feedItem_model.dart';
 
 import '../core/repositories/list_state.dart';
 import '../models/task/task_model.dart';
@@ -228,6 +231,7 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
                                   selectedState = value!;
                                 });
                               },
+                              // widget.dataTask == null ?
                               items: list.map<DropdownMenuItem<String>>(
                                   (String value) {
                                 return DropdownMenuItem<String>(
@@ -386,8 +390,6 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
                                           .showSnackBar(snackBar);
                                       setState(() {
                                         selectedProject = currencyValue;
-                                        print(
-                                            'selectedProject ${selectedProject}');
                                       });
                                     },
                                   );
@@ -501,13 +503,12 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
         .doc(idTask)
         .set(taskModel.toMap());
 
-    await FirebaseFirestore.instance
-        .collection('projects')
-        .doc(selectedProject)
-        .update({
+    await firebaseFirestore.collection('projects').doc(selectedProject).update({
       'taskArray': FieldValue.arrayUnion([idTask]),
       'employeeArray': FieldValue.arrayUnion([selectedEmployee])
     });
+
+    addTaskToNotificationFeed();
 
     const snackBar = SnackBar(
       content: Text('Đăng ký thành công !'),
@@ -519,5 +520,26 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
     } else {
       Navigator.of(context).pop();
     }
+  }
+
+  addTaskToNotificationFeed() async {
+    FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
+    var currentUser = FirebaseAuth.instance.currentUser;
+    final idFeed = firebaseFirestore.collection('feedItems').doc().id;
+
+    FeedItemModel feedItemModel = FeedItemModel(
+      id: idFeed,
+      username: currentUser?.displayName,
+      userId: currentUser?.uid,
+      userProgileImage: currentUser?.photoURL,
+      type: 'công việc',
+      title: titleController.text,
+      employeeId: selectedEmployee,
+    );
+
+    await firebaseFirestore
+        .collection("feedItems")
+        .doc(idFeed)
+        .set(feedItemModel.toMap());
   }
 }

@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:manager_apps/core/extensions/custom_style.dart';
 import 'package:manager_apps/models/project/project_model.dart';
@@ -10,6 +9,7 @@ import '../core/extensions/date_format.dart';
 import '../core/repositories/get_data_collection_doc.dart';
 import '../core/repositories/list_state.dart';
 import '../models/user/user_model.dart';
+import '../models/user_arguments_model.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -25,7 +25,6 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     var screenSizeWidth = MediaQuery.of(context).size.width;
-    List userAuth = [];
 
     User? currentUser = _auth.currentUser;
 
@@ -48,9 +47,8 @@ class _HomePageState extends State<HomePage> {
                       );
                     }
                     var document = snapshot.data;
-                    userAuth.add(document!["name"]);
                     return Text(
-                      document["name"] ?? 'Your Name',
+                      document!["name"] ?? 'Your Name',
                       style: const TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
@@ -69,9 +67,8 @@ class _HomePageState extends State<HomePage> {
                       );
                     }
                     var document = snapshot.data;
-                    userAuth.add(document!["level"]);
                     return Text(
-                      document["level"] ?? 'Your Level',
+                      document!["level"] ?? 'Your Level',
                       style: const TextStyle(fontSize: 14, color: Colors.black),
                     );
                   }),
@@ -80,70 +77,94 @@ class _HomePageState extends State<HomePage> {
         ),
         leadingWidth:
             screenSizeWidth < 600 ? screenSizeWidth / 4.5 : screenSizeWidth / 8,
-        leading: InkWell(
-          onTap: () {
-            print('user au ${userAuth}');
-            Navigator.of(context).pushNamed(
-              '/EditProfile',
+        leading: StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+          stream: getDataDoc(currentUser.uid, "users"),
+          builder: (context, snapshot) {
+            if (!snapshot.hasData) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+            var document = snapshot.data?.data();
+            var image = document!["profileImage"];
+            return InkWell(
+              onTap: () {
+                Navigator.of(context).pushNamed('/EditProfile',
+                    arguments: UserArguments(userModel: document));
+              },
+              child: Container(
+                margin: EdgeInsets.only(left: Dimension.padding.medium),
+                decoration: BoxDecoration(
+                  border: Border.all(width: 2, color: Colors.white),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.35),
+                      spreadRadius: 5,
+                      blurRadius: 5,
+                      offset: const Offset(0, 2),
+                    )
+                  ],
+                  shape: BoxShape.circle,
+                  image: image == null
+                      ? const DecorationImage(
+                          image: AssetImage('assets/images/avatar.png'),
+                          fit: BoxFit.contain)
+                      : DecorationImage(
+                          image: NetworkImage(image),
+                          fit: BoxFit.contain,
+                        ),
+                ),
+              ),
             );
           },
-          child: StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
-              stream: getDataDoc(currentUser.uid, "users"),
-              builder: (context, snapshot) {
-                if (!snapshot.hasData) {
-                  return const Center(
-                    child: CircularProgressIndicator(),
-                  );
-                }
-                var document = snapshot.data;
-                var image = document!["profileImage"];
-                userAuth.add(image);
-                userAuth.add(document["uid"]);
-                return Container(
-                  margin: EdgeInsets.only(left: Dimension.padding.medium),
-                  decoration: BoxDecoration(
-                    border: Border.all(width: 2, color: Colors.white),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.35),
-                        spreadRadius: 5,
-                        blurRadius: 5,
-                        offset: const Offset(0, 2),
-                      )
-                    ],
-                    shape: BoxShape.circle,
-                    image: image == null
-                        ? const DecorationImage(
-                            image: AssetImage('assets/images/avatar.png'),
-                            fit: BoxFit.contain)
-                        : DecorationImage(
-                            image: NetworkImage(image),
-                            fit: BoxFit.contain,
-                          ),
-                  ),
-                );
-              }),
         ),
         actions: [
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Container(
-                margin: EdgeInsets.only(right: Dimension.padding.medium),
-                height: screenSizeWidth < 600
-                    ? screenSizeWidth / 9
-                    : screenSizeWidth / 17,
-                width: screenSizeWidth < 600
-                    ? screenSizeWidth / 9
-                    : screenSizeWidth / 17,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Colors.blue.shade900,
-                ),
-                alignment: Alignment.center,
-                child: const Icon(
-                  Icons.notifications,
-                  color: Colors.white,
+              InkWell(
+                onTap: () {
+                  Navigator.of(context).pushNamed(
+                    '/Notification',
+                  );
+                },
+                child: Stack(
+                  alignment: AlignmentDirectional.topCenter,
+                  children: [
+                    Container(
+                      margin: EdgeInsets.only(right: Dimension.padding.medium),
+                      height: screenSizeWidth < 600
+                          ? screenSizeWidth / 9
+                          : screenSizeWidth / 17,
+                      width: screenSizeWidth < 600
+                          ? screenSizeWidth / 9
+                          : screenSizeWidth / 17,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Colors.blue.shade900,
+                      ),
+                      alignment: Alignment.center,
+                      child: const Icon(
+                        Icons.notifications,
+                        color: Colors.white,
+                      ),
+                    ),
+                    const Positioned(
+                      top: 0,
+                      right: 6,
+                      child: SizedBox(
+                        height: 20,
+                        width: 20,
+                        child: CircleAvatar(
+                          backgroundColor: Colors.red,
+                          child: Text(
+                            '2',
+                            style: TextStyle(fontSize: 10, color: Colors.white),
+                          ),
+                        ),
+                      ),
+                    )
+                  ],
                 ),
               ),
             ],

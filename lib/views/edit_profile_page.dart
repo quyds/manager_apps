@@ -167,9 +167,13 @@ class _EditProfilePageState extends State<EditProfilePage> {
         var document = snapshot.data;
         var data = document![name];
         debugPrint(data.toString());
-        updateDisplayName(nameController.text);
+        if (widget.dataUser?.uid == currentUser.uid) {
+          if (nameController.text.isNotEmpty) {
+            updateDisplayName(nameController.text);
+          }
+        }
         return TextField(
-          controller: nameController = TextEditingController(text: data),
+          controller: nameController,
           decoration: InputDecoration(
               labelText: labelName, border: const OutlineInputBorder()),
         );
@@ -189,7 +193,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
         var data = document![name];
         debugPrint(data.toString());
         return TextField(
-          controller: phoneController = TextEditingController(text: data),
+          controller: phoneController,
           decoration: InputDecoration(
               labelText: labelName, border: const OutlineInputBorder()),
         );
@@ -209,7 +213,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
         var data = document![name];
         debugPrint(data.toString());
         return TextField(
-          controller: levelController = TextEditingController(text: data),
+          controller: levelController,
           decoration: InputDecoration(
               labelText: labelName, border: const OutlineInputBorder()),
         );
@@ -225,8 +229,10 @@ class _EditProfilePageState extends State<EditProfilePage> {
         if (!snapshot.hasData) {
           return const Center(child: CircularProgressIndicator());
         }
-        var document = snapshot.data;
-        var data = document!["profileImage"];
+        var data = widget.dataUser?.profileImage;
+        if (widget.dataUser?.uid == currentUser.uid) {
+          updatePhotoUrl(data!);
+        }
         return InkWell(
           onTap: () {
             chooseImage();
@@ -235,7 +241,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
             height: 160,
             width: 160,
             decoration: BoxDecoration(
-              border: Border.all(width: 3, color: Colors.black),
+              border: Border.all(
+                  width: 3, color: const Color.fromARGB(255, 110, 76, 76)),
               shape: BoxShape.circle,
               image: file == null
                   ? data == null
