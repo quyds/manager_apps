@@ -53,7 +53,7 @@ class _NotificationPageState extends State<NotificationPage> {
                           ),
                           TextSpan(
                             text:
-                                ' đã thêm ${feedItemModel.type} ${feedItemModel.title} cho bạn',
+                                ' đã thêm ${feedItemModel.type} ${feedItemModel.title}',
                           ),
                         ]),
                   ),
