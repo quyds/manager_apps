@@ -535,6 +535,7 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
       type: 'công việc',
       title: titleController.text,
       employeeId: selectedEmployee,
+      isChecked: true,
     );
 
     await firebaseFirestore

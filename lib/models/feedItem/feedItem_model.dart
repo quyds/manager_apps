@@ -10,6 +10,7 @@ class FeedItemModel {
   late final String? employeeId;
   late final DateTime? createdAt;
   late final DateTime? updatedAt;
+  late final bool? isChecked;
 
   FeedItemModel({
     this.id,
@@ -21,6 +22,7 @@ class FeedItemModel {
     this.employeeId,
     this.createdAt,
     this.updatedAt,
+    this.isChecked,
   });
 
   factory FeedItemModel.fromMap(map) {
@@ -38,6 +40,7 @@ class FeedItemModel {
       updatedAt: map['updatedAt'] != null
           ? (map['updatedAt'] as Timestamp).toDate()
           : null,
+      isChecked: map['isChecked'],
     );
   }
 
@@ -52,6 +55,7 @@ class FeedItemModel {
       'employeeId': employeeId,
       'createdAt': FieldValue.serverTimestamp(),
       'updatedAt': updatedAt,
+      'isChecked': isChecked,
     };
   }
 }

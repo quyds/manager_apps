@@ -74,9 +74,9 @@ extension StringExtension on String {
       timeUnit = 'year';
     }
 
-    timeAgo = timeValue.toString() + ' ' + timeUnit;
+    timeAgo = '$timeValue $timeUnit';
     timeAgo += timeValue > 1 ? 's' : '';
 
-    return timeAgo + ' ago';
+    return '$timeAgo ago';
   }
 }

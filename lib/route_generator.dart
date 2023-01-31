@@ -10,10 +10,10 @@ import 'package:manager_apps/views/form_project_page.dart';
 import 'package:manager_apps/views/list_project_page.dart';
 import 'package:manager_apps/views/list_task_page.dart';
 import 'package:manager_apps/views/main_page.dart';
-import 'package:manager_apps/views/notification_page.dart';
 
 import 'views/home_page.dart';
 import 'views/create_task_page.dart';
+import 'views/notification_page.dart';
 
 class RouteGenerator {
   static Route<dynamic>? routeGenerator(RouteSettings settings) {
@@ -23,9 +23,12 @@ class RouteGenerator {
       case ('/Home'):
         return MaterialPageRoute(builder: (context) => const HomePage());
       case ('/Notification'):
+        Object? feedItem = settings.arguments;
+        print('object12 ${feedItem}');
         return MaterialPageRoute(
-            builder: (context) => const NotificationPage());
-
+            builder: (context) => NotificationPage(
+                  feedItemModel: feedItem,
+                ));
       case ('/EditProfile'):
         UserArguments? arguments = settings.arguments == null
             ? UserArguments()

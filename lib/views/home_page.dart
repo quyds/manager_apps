@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:manager_apps/core/extensions/custom_style.dart';
+import 'package:manager_apps/models/feedItem/feedItem_model.dart';
 import 'package:manager_apps/models/project/project_model.dart';
 import 'package:manager_apps/models/task/task_model.dart';
 import '../const/app_constants.dart';
@@ -122,51 +123,80 @@ class _HomePageState extends State<HomePage> {
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              InkWell(
-                onTap: () {
-                  Navigator.of(context).pushNamed(
-                    '/Notification',
-                  );
-                },
-                child: Stack(
-                  alignment: AlignmentDirectional.topCenter,
-                  children: [
-                    Container(
-                      margin: EdgeInsets.only(right: Dimension.padding.medium),
-                      height: screenSizeWidth < 600
-                          ? screenSizeWidth / 9
-                          : screenSizeWidth / 17,
-                      width: screenSizeWidth < 600
-                          ? screenSizeWidth / 9
-                          : screenSizeWidth / 17,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Colors.blue.shade900,
-                      ),
-                      alignment: Alignment.center,
-                      child: const Icon(
-                        Icons.notifications,
-                        color: Colors.white,
-                      ),
-                    ),
-                    const Positioned(
-                      top: 0,
-                      right: 6,
-                      child: SizedBox(
-                        height: 20,
-                        width: 20,
-                        child: CircleAvatar(
-                          backgroundColor: Colors.red,
-                          child: Text(
-                            '2',
-                            style: TextStyle(fontSize: 10, color: Colors.white),
+              FutureBuilder(
+                future: getListNotification(_auth.currentUser!.uid),
+                builder: (context, snapshot) {
+                  if (snapshot.hasError) {
+                    return Text(snapshot.error.toString());
+                  }
+                  if (snapshot.hasData) {
+                    int? notifiLength = snapshot.data?.length;
+                    List? listNotification = snapshot.data;
+
+                    listNotification?.map(
+                      (e) {
+                        FeedItemModel feedItemModel = FeedItemModel.fromMap(e);
+                        feedItemModel;
+                      },
+                    );
+
+                    print('object ${snapshot.data}');
+
+                    return InkWell(
+                      onTap: () {
+                        Navigator.of(context).pushNamed('/Notification',
+                            arguments: listNotification);
+                      },
+                      child: Stack(
+                        alignment: AlignmentDirectional.topCenter,
+                        children: [
+                          Container(
+                            margin: EdgeInsets.only(
+                                right: Dimension.padding.medium),
+                            height: screenSizeWidth < 600
+                                ? screenSizeWidth / 9
+                                : screenSizeWidth / 17,
+                            width: screenSizeWidth < 600
+                                ? screenSizeWidth / 9
+                                : screenSizeWidth / 17,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Colors.blue.shade900,
+                            ),
+                            alignment: Alignment.center,
+                            child: const Icon(
+                              Icons.notifications,
+                              color: Colors.white,
+                            ),
                           ),
-                        ),
+                          notifiLength != 0
+                              ? Positioned(
+                                  top: 0,
+                                  right: 6,
+                                  child: SizedBox(
+                                    height: 20,
+                                    width: 20,
+                                    child: CircleAvatar(
+                                      backgroundColor: Colors.red,
+                                      child: Text(
+                                        '$notifiLength',
+                                        style: const TextStyle(
+                                            fontSize: 10, color: Colors.white),
+                                      ),
+                                    ),
+                                  ),
+                                )
+                              : Container(),
+                        ],
                       ),
-                    )
-                  ],
-                ),
-              ),
+                    );
+                  } else {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }
+                },
+              )
             ],
           )
         ],
@@ -557,5 +587,17 @@ class _HomePageState extends State<HomePage> {
           FirebaseFirestore.instance.collection('tasks').doc(taskModel.id);
       docUser.delete();
     }).toList();
+  }
+
+  Future<List?> getListNotification(String? query) async {
+    List? filterFeed;
+
+    final result = await FirebaseFirestore.instance
+        .collection('feedItems')
+        .where('userId', isEqualTo: query)
+        .get();
+
+    filterFeed = result.docs.map((e) => e.data()).toList();
+    return filterFeed;
   }
 }
