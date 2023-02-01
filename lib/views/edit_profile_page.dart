@@ -123,8 +123,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
   void chooseImage() async {
     XFile? xfile = await ImagePicker().pickImage(source: ImageSource.gallery);
-    print('xFile + ${xfile?.path}');
+
     file = File(xfile!.path);
+
     setState(() {});
   }
 
@@ -229,6 +230,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
         if (!snapshot.hasData) {
           return const Center(child: CircularProgressIndicator());
         }
+
         var data = widget.dataUser?.profileImage;
         if (widget.dataUser?.uid == currentUser.uid) {
           updatePhotoUrl(data!);

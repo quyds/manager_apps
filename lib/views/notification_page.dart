@@ -1,6 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:manager_apps/const/app_constants.dart';
-import 'package:manager_apps/core/repositories/list_state.dart';
 import 'package:manager_apps/models/feedItem/feedItem_model.dart';
 import '../core/extensions/date_format.dart';
 
@@ -23,7 +23,6 @@ class _NotificationPageState extends State<NotificationPage> {
         itemCount: listFeed.length,
         itemBuilder: (context, index) {
           FeedItemModel? feedItemModel = FeedItemModel.fromMap(listFeed[index]);
-
           String? image = feedItemModel.userProgileImage;
 
           return Container(
@@ -32,7 +31,8 @@ class _NotificationPageState extends State<NotificationPage> {
                 : Colors.white,
             child: InkWell(
               onTap: () {
-                print('da click');
+                Navigator.of(context).pushNamed('/ListTask');
+                updateIsChecked(feedItemModel);
               },
               child: ListTile(
                 title: RichText(
@@ -74,5 +74,16 @@ class _NotificationPageState extends State<NotificationPage> {
         },
       ),
     );
+  }
+
+  void updateIsChecked(FeedItemModel? feedItemModel) async {
+    FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
+
+    await firebaseFirestore
+        .collection('feedItems')
+        .doc(feedItemModel?.id)
+        .update({
+      'isChecked': false,
+    });
   }
 }

@@ -130,17 +130,19 @@ class _HomePageState extends State<HomePage> {
                     return Text(snapshot.error.toString());
                   }
                   if (snapshot.hasData) {
-                    int? notifiLength = snapshot.data?.length;
                     List? listNotification = snapshot.data;
 
-                    listNotification?.map(
+                    List? isChecked = listNotification?.map(
                       (e) {
                         FeedItemModel feedItemModel = FeedItemModel.fromMap(e);
-                        feedItemModel;
+                        return feedItemModel.isChecked;
                       },
-                    );
-
-                    print('object ${snapshot.data}');
+                    ).toList();
+                    List? isCheckedTrue = isChecked?.where(
+                      (element) {
+                        return element == true;
+                      },
+                    ).toList();
 
                     return InkWell(
                       onTap: () {
@@ -169,7 +171,7 @@ class _HomePageState extends State<HomePage> {
                               color: Colors.white,
                             ),
                           ),
-                          notifiLength != 0
+                          isCheckedTrue!.isNotEmpty
                               ? Positioned(
                                   top: 0,
                                   right: 6,
@@ -179,7 +181,7 @@ class _HomePageState extends State<HomePage> {
                                     child: CircleAvatar(
                                       backgroundColor: Colors.red,
                                       child: Text(
-                                        '$notifiLength',
+                                        '${isCheckedTrue.length}',
                                         style: const TextStyle(
                                             fontSize: 10, color: Colors.white),
                                       ),
