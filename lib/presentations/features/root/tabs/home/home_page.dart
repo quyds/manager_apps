@@ -9,6 +9,7 @@ import 'package:manager_apps/presentations/view_models/project/project_model.dar
 import 'package:manager_apps/core/const/app_constants.dart';
 import 'package:manager_apps/core/repositories/get_data_collection_doc.dart';
 import 'package:manager_apps/core/repositories/list_state.dart';
+import 'package:manager_apps/presentations/view_models/user/user_model.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -85,11 +86,12 @@ class _HomePageState extends State<HomePage> {
               );
             }
             var document = snapshot.data?.data();
+            UserModel? userModel = UserModel.fromMap(document);
             var image = document!["profileImage"];
             return InkWell(
               onTap: () {
                 Navigator.of(context).pushNamed('/EditProfile',
-                    arguments: UserArguments(userModel: document));
+                    arguments: UserArguments(userModel: userModel));
               },
               child: Container(
                 margin: EdgeInsets.only(left: Dimension.padding.medium),
