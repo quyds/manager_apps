@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:manager_apps/models/task_arguments_model.dart';
-import 'package:manager_apps/models/task/task_model.dart';
-import 'package:manager_apps/models/user/user_model.dart';
-import 'package:manager_apps/models/user_arguments_model.dart';
-import 'package:manager_apps/views/auth/login_page.dart';
-import 'package:manager_apps/views/auth/register_page.dart';
-import 'package:manager_apps/views/edit_profile_page.dart';
-import 'package:manager_apps/views/form_project_page.dart';
-import 'package:manager_apps/views/list_project_page.dart';
-import 'package:manager_apps/views/list_task_page.dart';
-import 'package:manager_apps/views/main_page.dart';
+import 'package:manager_apps/core/auth/login_page.dart';
+import 'package:manager_apps/core/auth/register_page.dart';
+import 'package:manager_apps/data/models/task_arguments_model.dart';
+import 'package:manager_apps/data/models/user_arguments_model.dart';
+import 'package:manager_apps/presentations/features/root/tabs/users/edit_profile_page.dart';
+import 'package:manager_apps/presentations/features/project/create_update/form_project_page.dart';
+import 'package:manager_apps/presentations/features/project/list/list_project_page.dart';
+import 'package:manager_apps/presentations/features/task/list/list_task_page.dart';
+import 'package:manager_apps/presentations/features/root/main_page.dart';
 
-import 'views/home_page.dart';
-import 'views/create_task_page.dart';
-import 'views/notification_page.dart';
+import 'presentations/features/root/tabs/home/home_page.dart';
+import 'presentations/features/task/create_update/form_task_page.dart';
+import 'presentations/features/notification/list/notification_page.dart';
+import 'presentations/view_models/task/task_model.dart';
+import 'presentations/view_models/user/user_model.dart';
 
 class RouteGenerator {
   static Route<dynamic>? routeGenerator(RouteSettings settings) {
@@ -24,7 +24,6 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (context) => const HomePage());
       case ('/Notification'):
         Object? feedItem = settings.arguments;
-        print('object12 ${feedItem}');
         return MaterialPageRoute(
             builder: (context) => NotificationPage(
                   feedItemModel: feedItem,
@@ -33,12 +32,11 @@ class RouteGenerator {
         UserArguments? arguments = settings.arguments == null
             ? UserArguments()
             : settings.arguments as UserArguments;
-        UserModel? userModelDetail = settings.arguments != null
-            ? UserModel.fromMap(arguments.userModel)
-            : null;
+        final userModelDetail =
+            settings.arguments != null ? arguments.userModel : null;
         return MaterialPageRoute(
             builder: (context) => EditProfilePage(
-                  dataUser: userModelDetail,
+                  dataUser: userModelDetail as UserModel,
                 ),
             settings: settings);
       case ('/CreateTask'):
@@ -50,7 +48,7 @@ class RouteGenerator {
             : null;
         return MaterialPageRoute(
             builder: (context) {
-              return CreateTaskPage(
+              return FormTaskPage(
                 dataTask: taskModelDetail,
                 projectId: arguments.projectId,
               );

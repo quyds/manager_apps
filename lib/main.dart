@@ -1,9 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:manager_apps/core/auth/login_home.dart';
 import 'package:manager_apps/route_generator.dart';
-import 'package:manager_apps/views/main_page.dart';
-import 'views/auth/login_home.dart';
+import 'package:manager_apps/presentations/features/root/main_page.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 void main() async {
