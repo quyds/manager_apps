@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:manager_apps/core/const/app_constants.dart';
+import 'package:manager_apps/presentations/view_models/feedItem/feedItem_model.dart';
 import 'package:manager_apps/presentations/view_models/project/project_model.dart';
 
 import 'package:manager_apps/core/extensions/custom_style.dart';
@@ -159,6 +161,8 @@ class _FormProjectPageState extends State<FormProjectPage> {
         .doc(idProject)
         .set(projectModel.toMap());
 
+    addProjectToNotificationFeed();
+
     const snackBar = SnackBar(
       content: Text('Tạo thành công !'),
       behavior: SnackBarBehavior.floating,
@@ -166,5 +170,27 @@ class _FormProjectPageState extends State<FormProjectPage> {
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
 
     Navigator.of(context).pushNamed('/Main');
+  }
+
+  addProjectToNotificationFeed() async {
+    FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
+    var currentUser = FirebaseAuth.instance.currentUser;
+    final idFeed = firebaseFirestore.collection('feedItems').doc().id;
+
+    FeedItemModel feedItemModel = FeedItemModel(
+      id: idFeed,
+      username: currentUser?.displayName,
+      userId: currentUser?.uid,
+      userProgileImage: currentUser?.photoURL,
+      type: 'dự án',
+      title: titleController.text,
+      // employeeId: null,
+      isChecked: true,
+    );
+
+    await firebaseFirestore
+        .collection("feedItems")
+        .doc(idFeed)
+        .set(feedItemModel.toMap());
   }
 }

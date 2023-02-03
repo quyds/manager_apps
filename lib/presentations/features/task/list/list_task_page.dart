@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:manager_apps/data/models/task_arguments_model.dart';
 import 'package:manager_apps/presentations/features/task/widgets/task_item.dart';
 import 'package:manager_apps/presentations/view_models/task/task_model.dart';
 
