@@ -10,10 +10,10 @@ class TaskItem extends StatelessWidget {
     var myTextStyle = Theme.of(context).textTheme;
     return Container(
       margin: EdgeInsets.all(5),
-      child: Card(
+      child: const Card(
         elevation: 5,
         child: Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: EdgeInsets.all(8.0),
           // child: ListTile(
           //   onTap: () {
           //     Navigator.of(context)
