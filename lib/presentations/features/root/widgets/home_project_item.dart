@@ -1,11 +1,10 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:manager_apps/core/const/app_constants.dart';
 import 'package:manager_apps/core/extensions/date_format.dart';
 import 'package:manager_apps/core/repositories/list_state.dart';
+import 'package:manager_apps/presentations/features/project/list/bloc/project_list_bloc.dart';
 import 'package:manager_apps/presentations/view_models/project/project_model.dart';
-import 'package:manager_apps/presentations/view_models/task/task_model.dart';
-import 'package:manager_apps/presentations/view_models/user/user_model.dart';
 
 class HomeProjectItem extends StatefulWidget {
   final ProjectModel? projectModel;
@@ -37,11 +36,9 @@ class _HomeProjectItemState extends State<HomeProjectItem> {
           Navigator.of(context).pushNamed('/ListProject');
         },
         onDoubleTap: () {
-          _showPopupMenu(Offset(120, 250), widget.projectModel?.id);
+          context.read<ProjectListBloc>().showPopupMenu(
+              Offset(120, 250), widget.projectModel?.id, context);
         },
-        // onDoubleTapDown: (TapDownDetails details) {
-        //   _showPopupMenu(details.globalPosition, projectModel.id);
-        // },
         child: Container(
           padding: EdgeInsets.only(
               left: Dimension.padding.small, right: Dimension.padding.small),
@@ -83,7 +80,9 @@ class _HomeProjectItemState extends State<HomeProjectItem> {
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: listUsers!.map((e) {
                             return FutureBuilder(
-                              future: getUserById(e),
+                              future: context
+                                  .read<ProjectListBloc>()
+                                  .getUserById(e),
                               builder: (context, snapshot) {
                                 if (snapshot.hasError) {
                                   return Text(snapshot.error.toString());
@@ -139,105 +138,5 @@ class _HomeProjectItemState extends State<HomeProjectItem> {
         ),
       ),
     );
-  }
-
-  Future<UserModel?> getUserById(String id) async {
-    final doc = FirebaseFirestore.instance.collection("users").doc(id);
-
-    final snapShot = await doc.get();
-
-    if (snapShot.exists) {
-      return UserModel.fromMap(snapShot.data()!);
-    }
-    return null;
-  }
-
-  void _showPopupMenu(Offset offset, String? id) async {
-    double left = offset.dx;
-    double top = offset.dy;
-
-    await showMenu(
-      context: context,
-      position: RelativeRect.fromLTRB(left, top, left, top),
-      items: [
-        const PopupMenuItem(
-          value: 1,
-          child: Text("Chỉnh sửa"),
-        ),
-        const PopupMenuItem(
-          value: 2,
-          child: Text("Xóa"),
-        ),
-      ],
-      elevation: 8.0,
-    ).then((value) {
-      if (value == 1) {
-        Navigator.of(context).pushNamed('/FormaaProject').then((value) {
-          setState(() {});
-        });
-      }
-      if (value == 2) {
-        showAlertDialog(context, id);
-      }
-    });
-  }
-
-  showAlertDialog(BuildContext context, id) {
-    Widget cancelButton = TextButton(
-      child: const Text("Hủy"),
-      onPressed: () {
-        Navigator.of(context).pop();
-      },
-    );
-    Widget continueButton = TextButton(
-      child: const Text("Tiếp tục"),
-      onPressed: () {
-        final docUser =
-            FirebaseFirestore.instance.collection('projects').doc(id);
-        deleteByProjectId(id);
-        docUser.delete();
-
-        const snackBar = SnackBar(
-          content: Text(
-            'Đã xóa thành công!',
-          ),
-          behavior: SnackBarBehavior.floating,
-        );
-        ScaffoldMessenger.of(context).showSnackBar(snackBar);
-        Navigator.of(context).pushNamed('/Main');
-      },
-    );
-
-    AlertDialog alert = AlertDialog(
-      title: const Text("Thông báo"),
-      content: const Text("Bạn có chắc chắn muốn xóa không?"),
-      actions: [
-        cancelButton,
-        continueButton,
-      ],
-    );
-
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return alert;
-      },
-    );
-  }
-
-  void deleteByProjectId(String? query) async {
-    final result = await FirebaseFirestore.instance
-        .collection('tasks')
-        .where('project', isEqualTo: query)
-        .get();
-
-    filterState = result.docs.map((e) => e.data()).map((el) {
-      final element = el;
-      TaskModel taskModel = TaskModel.fromMap(element);
-
-      final docUser =
-          FirebaseFirestore.instance.collection('tasks').doc(taskModel.id);
-      docUser.delete();
-    }).toList();
   }
 }

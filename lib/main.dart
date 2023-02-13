@@ -6,6 +6,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:manager_apps/core/auth/login_home.dart';
 import 'package:manager_apps/core/routes/routes.dart';
 import 'package:manager_apps/presentations/features/notification/list/bloc/notification_list_bloc.dart';
+import 'package:manager_apps/presentations/features/project/list/bloc/project_list_bloc.dart';
+import 'package:manager_apps/presentations/features/task/list/bloc/task_list_bloc.dart';
 import 'package:manager_apps/route_generator.dart';
 import 'package:manager_apps/presentations/features/root/main_page.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -41,8 +43,13 @@ class _MyAppState extends State<MyApp> {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (context) =>
-              NotificationListBloc()..add(NotificationRequested()),
+          create: (context) => NotificationListBloc(),
+        ),
+        BlocProvider(
+          create: (context) => ProjectListBloc(),
+        ),
+        BlocProvider(
+          create: (context) => TaskListBloc(),
         ),
       ],
       child: MaterialApp(

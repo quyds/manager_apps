@@ -6,8 +6,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:manager_apps/data/models/user_arguments_model.dart';
 import 'package:manager_apps/presentations/features/notification/list/bloc/notification_list_bloc.dart';
 import 'package:manager_apps/presentations/features/notification/list/bloc/notification_list_event.dart';
+import 'package:manager_apps/presentations/features/project/list/bloc/project_list_bloc.dart';
 import 'package:manager_apps/presentations/features/root/widgets/home_project_item.dart';
 import 'package:manager_apps/presentations/features/root/widgets/home_task_item.dart';
+import 'package:manager_apps/presentations/features/root/widgets/home_title.dart';
+import 'package:manager_apps/presentations/features/task/list/bloc/task_list_bloc.dart';
 import 'package:manager_apps/presentations/view_models/feedItem/feedItem_model.dart';
 import 'package:manager_apps/presentations/view_models/project/project_model.dart';
 import 'package:manager_apps/core/const/app_constants.dart';
@@ -140,7 +143,9 @@ class _HomePageState extends State<HomePage> {
                       return element == true;
                     },
                   ).toList();
-
+                  context
+                      .read<NotificationListBloc>()
+                      .add(NotificationRequested());
                   return InkWell(
                     onTap: () {
                       Navigator.of(context).pushNamed('/Notification',
@@ -205,147 +210,100 @@ class _HomePageState extends State<HomePage> {
               left: Dimension.padding.medium, right: Dimension.padding.medium),
           child: Column(
             children: <Widget>[
-              homeTitle(context, 'Dự án hiện tại', '', null),
-              SizedBox(
+              const HomeTitle(
+                title: 'Dự án hiện tại',
+              ),
+              Container(
+                margin: EdgeInsets.only(
+                    top: Dimension.padding.small,
+                    bottom: Dimension.padding.small),
                 height: screenSizeWidth < 600
                     ? screenSizeWidth / 2.5
                     : screenSizeWidth / 5,
-                child: homeListProject(context, screenSizeWidth),
+                child: BlocBuilder<ProjectListBloc, ProjectListState>(
+                  builder: (context, state) {
+                    if (state.projectStatus == ProjectRequest.requestFailure) {
+                      return const Center(child: Text('Error'));
+                    }
+                    context.read<ProjectListBloc>().add(ProjectRequested());
+                    return ListView.builder(
+                      itemCount: state.projects!.length,
+                      scrollDirection: Axis.horizontal,
+                      itemBuilder: (context, index) {
+                        ProjectModel? projectModel =
+                            ProjectModel.fromMap(state.projects![index]);
+                        List? listUsers = [];
+                        if (projectModel.employeeArray!.isNotEmpty) {
+                          if (projectModel.employeeArray!.length >= 3) {
+                            for (int i = 0; i < 3; i++) {
+                              listUsers.add(projectModel.employeeArray![i]);
+                            }
+                          } else {
+                            for (int i = 0;
+                                i < projectModel.employeeArray!.length;
+                                i++) {
+                              listUsers.add(projectModel.employeeArray![i]);
+                            }
+                          }
+                        }
+                        return HomeProjectItem(
+                          projectModel: projectModel,
+                          toListUsers: listUsers,
+                          toFilterState: filterState,
+                          toIndex: index,
+                        );
+                      },
+                    );
+                  },
+                ),
               ),
-              homeTitle(context, 'Công việc', '', null),
+              const HomeTitle(
+                title: 'Công việc',
+              ),
               SizedBox(
                 height: 220,
-                child: homeListTask(context, screenSizeWidth),
+                child: ListView.builder(
+                  itemCount: list.length - 1,
+                  itemBuilder: (context, index) {
+                    return BlocBuilder<TaskListBloc, TaskListState>(
+                      builder: (context, state) {
+                        return FutureBuilder(
+                          future: context
+                              .read<TaskListBloc>()
+                              .getNumTasks(list[index]),
+                          builder: (context, snapshot) {
+                            List nameList = [];
+                            for (int i = 0; i < list[index].length; i++) {
+                              if (list[index] == 'To Do') {
+                                nameList.add('Thực hiện');
+                              }
+                              if (list[index] == 'In Progress') {
+                                nameList.add('Đang thực hiện');
+                              }
+                              if (list[index] == 'Done') {
+                                nameList.add('Hoàn thành');
+                              }
+                              if (list[index] == 'Remove') {
+                                nameList.add('Đã xóa');
+                              }
+                            }
+                            int? taskLength = snapshot.data?.length;
+                            return HomeTaskItem(
+                              toIndex: index,
+                              toNameList: nameList,
+                              toTaskLength: taskLength,
+                            );
+                          },
+                        );
+                      },
+                    );
+                  },
+                ),
               ),
             ],
           ),
         ),
       ),
     );
-  }
-
-  Container homeTitle(BuildContext context, String title, String route, icons) {
-    return Container(
-      margin: EdgeInsets.only(top: Dimension.padding.small),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            title,
-            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-          ),
-          IconButton(
-            onPressed: () {
-              Navigator.of(context).pushNamed(route).then((value) => setState(
-                    () {},
-                  ));
-            },
-            icon: Icon(
-              icons,
-              color: Colors.deepPurple.shade900,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  homeListTask(BuildContext context, screenSizeWidth) {
-    return ListView.builder(
-      itemCount: list.length - 1,
-      itemBuilder: (context, index) {
-        return FutureBuilder(
-          future: getNumTasks(list[index]),
-          builder: (context, snapshot) {
-            List nameList = [];
-            for (int i = 0; i < list[index].length; i++) {
-              if (list[index] == 'To Do') {
-                nameList.add('Thực hiện');
-              }
-              if (list[index] == 'In Progress') {
-                nameList.add('Đang thực hiện');
-              }
-              if (list[index] == 'Done') {
-                nameList.add('Hoàn thành');
-              }
-              if (list[index] == 'Remove') {
-                nameList.add('Đã xóa');
-              }
-            }
-            int? taskLength = snapshot.data?.length;
-            return HomeTaskItem(
-              toIndex: index,
-              toNameList: nameList,
-              toTaskLength: taskLength,
-            );
-          },
-        );
-      },
-    );
-  }
-
-  StreamBuilder<QuerySnapshot<Object?>> homeListProject(
-      BuildContext context, screenSizeWidth) {
-    return StreamBuilder<QuerySnapshot>(
-      stream: FirebaseFirestore.instance
-          .collection('projects')
-          .orderBy('createdAt')
-          .get()
-          .asStream(),
-      builder: (context, snapshot) {
-        if (snapshot.hasError) {
-          return Text(snapshot.error.toString());
-        }
-        if (snapshot.hasData) {
-          if (snapshot.data!.docs.isEmpty) {
-            return Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: const [Text('No Project')],
-            );
-          }
-          return ListView.builder(
-            itemCount: snapshot.data!.docs.length,
-            scrollDirection: Axis.horizontal,
-            itemBuilder: (context, index) {
-              ProjectModel? projectModel =
-                  ProjectModel.fromMap(snapshot.data!.docs[index].data());
-              List? listUsers = [];
-              if (projectModel.employeeArray!.isNotEmpty) {
-                if (projectModel.employeeArray!.length >= 3) {
-                  for (int i = 0; i < 3; i++) {
-                    listUsers.add(projectModel.employeeArray![i]);
-                  }
-                } else {
-                  for (int i = 0; i < projectModel.employeeArray!.length; i++) {
-                    listUsers.add(projectModel.employeeArray![i]);
-                  }
-                }
-              }
-
-              return HomeProjectItem(
-                projectModel: projectModel,
-                toListUsers: listUsers,
-                toFilterState: filterState,
-                toIndex: index,
-              );
-            },
-          );
-        }
-        return const Center(
-          child: CircularProgressIndicator(),
-        );
-      },
-    );
-  }
-
-  Future<List?> getNumTasks(String? query) async {
-    final result = await FirebaseFirestore.instance
-        .collection('tasks')
-        .where('state', isEqualTo: query)
-        .get();
-
-    filterState = result.docs.map((e) => e.data()).toList();
-
-    return filterState;
   }
 }

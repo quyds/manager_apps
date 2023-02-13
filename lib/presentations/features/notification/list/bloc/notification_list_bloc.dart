@@ -49,13 +49,14 @@ class NotificationListBloc
   }
 
   void handleRemovedNotification(BuildContext context, String id) async {
-    FirebaseFirestore.instance.collection('feedItems').doc(id).delete();
-    context.read<NotificationListBloc>().add(NotificationRequested());
+    print('truoc khi xoa xoa ${state.notifications!.length}');
+    await FirebaseFirestore.instance.collection('feedItems').doc(id).delete();
+    print('da xoa ${state.notifications!.length}');
   }
 
   void handleUpdateIsChecked(String id) async {
     FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
-
+    print('da check');
     await firebaseFirestore.collection('feedItems').doc(id).update({
       'isChecked': false,
     });

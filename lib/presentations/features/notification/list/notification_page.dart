@@ -20,6 +20,7 @@ class _NotificationPageState extends State<NotificationPage> {
   @override
   Widget build(BuildContext context) {
     List? listFeed = widget.feedItemModel as List;
+
     return BlocBuilder<NotificationListBloc, NotificationListState>(
       builder: (context, state) {
         return Scaffold(
@@ -33,10 +34,10 @@ class _NotificationPageState extends State<NotificationPage> {
               title: const Text('Thông báo')),
           body: ListView.separated(
             shrinkWrap: true,
-            itemCount: listFeed.length,
+            itemCount: state.notifications!.length,
             itemBuilder: (context, index) {
               FeedItemModel? feedItemModel =
-                  FeedItemModel.fromMap(listFeed[index]);
+                  FeedItemModel.fromMap(state.notifications![index]);
               return Container(
                 color: feedItemModel.isChecked == true
                     ? Colors.grey.shade200
